@@ -1,17 +1,12 @@
-SIDELINEIQ v0.42.4
+SIDELINEIQ v0.42.5
 
-This is a corrective build for changes that were not visibly landing in v0.42.3.
-
-ROOT CAUSE / FIXES
-- Mobile scoring layout is assembled by JavaScript and uses inline !important geometry.
-  v0.42.3 tried to resize several controls primarily in CSS, so legacy rules could still win.
-- v0.42.4 applies icon dimensions directly in composeMobileGameLayout():
-  offense 38x38, defense 34x34, with smaller artwork inside.
-- Center field widened from 88px to 112px and increased to 535px tall.
-- Analytics styling no longer depends on CSS :has(). showModal() now assigns explicit
-  analytics-shell / player-stat-shell classes, so iPhone Safari receives the intended design.
-- Corrected malformed historical analytics selectors left by an older CSS patch.
-- Next Play penalty support from v0.42.3 is preserved, including PAT/2PT and cross-period enforcement.
-- TFL remains derived from negative yardage; Hurry/Missed remain removed.
-
-Existing v0.42.3 data migrates forward.
+DESKTOP-ONLY LIVE GAME REFINEMENTS
+- Larger desktop football drag handle (46x28 px).
+- Duplicate global SidelineIQ top banner removed from live games; score-row logo remains.
+- Recent Plays redesigned into a compact dark rail with clean cards and gain/loss pills.
+- Player quick-select chips now show # + first initial + last initial (example #72 JJ).
+  Full player name remains in the native hover title.
+- Defense icon buttons reduced to 58x58 px to better match offense.
+- Icon-only scoring controls show a styled hover/focus tooltip describing the action.
+- Mobile compositor/geometry intentionally unchanged.
+- v0.42.4 data migrates forward.

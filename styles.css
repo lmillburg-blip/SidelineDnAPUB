@@ -1756,3 +1756,85 @@ body.modal-open{overflow:hidden!important;touch-action:none}
   .modal.analytics-shell .stat-table th,
   .modal.analytics-shell .stat-table td{padding:4px 3px!important}
 }
+
+/* v0.42.5 — DESKTOP-ONLY live-game polish */
+@media (min-width:901px){
+  .game-page .football{
+    width:46px!important;height:28px!important;border-width:3px!important;cursor:grab!important;
+    box-shadow:0 3px 10px rgba(0,0,0,.58),0 0 0 3px rgba(255,255,255,.12)!important;
+  }
+  .game-page .football:active{cursor:grabbing!important}
+  .game-page .football:after{
+    width:18px!important;height:2px!important;left:11px!important;top:8px!important;
+    box-shadow:0 5px 0 #fff!important;
+  }
+  .game-page{padding-top:8px!important}
+
+  .recent-panel{
+    background:#071f29!important;border:1px solid #2b6070!important;border-radius:10px!important;
+    box-shadow:0 8px 22px rgba(0,0,0,.22)!important;
+  }
+  .recent-head{
+    height:42px!important;padding:0 10px!important;background:linear-gradient(180deg,#103b49,#082832)!important;
+    border-bottom:1px solid #285767!important;letter-spacing:.2px;
+  }
+  .recent-head .all-plays-btn{
+    padding:5px 9px!important;border-radius:999px!important;font-size:9px!important;
+    background:#eaf7ff!important;border-color:#bcd5df!important;
+  }
+  .recent-list{
+    height:293px!important;padding:5px!important;background:#0a2731!important;
+    scrollbar-color:#4d7180 #0a2731;
+  }
+  .play-row{
+    grid-template-columns:25px 29px 1fr 38px!important;
+    grid-template-areas:"num period desc yds" "num team desc yds"!important;
+    gap:1px 6px!important;min-height:46px!important;margin-bottom:4px!important;padding:6px 7px!important;
+    border:1px solid #d7e2e6!important;border-left:4px solid var(--play-team)!important;border-radius:7px!important;
+    background:#f8fbfc!important;box-shadow:0 1px 3px rgba(0,0,0,.10)!important;
+    font-size:9px!important;align-items:center!important;
+  }
+  .play-row:hover{filter:none!important;background:#eef8fb!important;border-color:#a8ccd8!important;transform:translateY(-1px)}
+  .play-row .play-num{grid-area:num;color:#78909a;font-weight:900;font-size:9px}
+  .play-row .play-period{grid-area:period;color:#526d78;font-weight:900;font-size:8px}
+  .play-row .play-time{display:none}
+  .play-row .play-team{grid-area:team;color:var(--play-team);font-size:8px;letter-spacing:.3px}
+  .play-row .desc{grid-area:desc;line-height:1.25!important;font-size:9px!important}
+  .play-row .yds{
+    grid-area:yds;text-align:center;font-weight:950;font-size:10px!important;min-width:30px;
+    padding:4px 3px;border-radius:999px;background:#e8eef1;color:#506873;
+  }
+  .play-row .yds.gain{background:#e1f4e9;color:#17633b}
+  .play-row .yds.loss{background:#fae7e9;color:#9a2936}
+  .recent-actions{
+    gap:6px!important;padding:7px!important;background:#0a2731!important;border-top:1px solid #285767!important;
+  }
+  .recent-actions .btn{padding:8px 6px!important;border-radius:7px!important;font-size:10px!important}
+
+  .pane.def .defense-icon-grid{
+    display:flex!important;flex-wrap:wrap!important;gap:6px!important;justify-content:flex-start!important;
+  }
+  .pane.def .defense-icon-grid .icon-action-btn{
+    width:58px!important;height:58px!important;min-width:58px!important;min-height:58px!important;
+    flex:0 0 58px!important;aspect-ratio:auto!important;padding:6px!important;border-radius:8px!important;
+  }
+  .pane.def .defense-icon-grid .play-action-icon{width:44px!important;height:44px!important}
+  .pane.def .mobile-def-extra{min-height:30px!important;padding:5px 8px!important}
+
+  .icon-action-btn{position:relative!important;overflow:visible!important}
+  .icon-action-btn:hover::after,.icon-action-btn:focus-visible::after{
+    content:attr(aria-label);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);
+    z-index:80;width:max-content;max-width:180px;padding:5px 8px;border:1px solid #3d7180;border-radius:6px;
+    background:#061d26;color:#fff;font-size:10px;font-weight:800;line-height:1.15;white-space:nowrap;
+    box-shadow:0 5px 14px rgba(0,0,0,.35);pointer-events:none;
+  }
+  .icon-action-btn:hover::before,.icon-action-btn:focus-visible::before{
+    content:"";position:absolute;left:50%;bottom:calc(100% + 2px);transform:translateX(-50%);z-index:81;
+    border:5px solid transparent;border-top-color:#3d7180;pointer-events:none;
+  }
+
+  .memory-chip{
+    padding:5px 8px!important;min-width:0!important;border-radius:999px!important;
+    font-size:10px!important;letter-spacing:.1px!important;white-space:nowrap!important;
+  }
+}
