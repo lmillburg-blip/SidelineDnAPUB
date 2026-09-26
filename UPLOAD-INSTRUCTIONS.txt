@@ -1,12 +1,16 @@
-SIDELINEIQ v0.42.5
+SIDELINEIQ v0.42.7
 
-DESKTOP-ONLY LIVE GAME REFINEMENTS
-- Larger desktop football drag handle (46x28 px).
-- Duplicate global SidelineIQ top banner removed from live games; score-row logo remains.
-- Recent Plays redesigned into a compact dark rail with clean cards and gain/loss pills.
-- Player quick-select chips now show # + first initial + last initial (example #72 JJ).
-  Full player name remains in the native hover title.
-- Defense icon buttons reduced to 58x58 px to better match offense.
-- Icon-only scoring controls show a styled hover/focus tooltip describing the action.
-- Mobile compositor/geometry intentionally unchanged.
-- v0.42.4 data migrates forward.
+PENALTY ANALYTICS
+- Analytics now shows team Total Flags and Penalty Yards.
+- Flags count every recorded penalty (accepted or declined).
+- Penalty Yards count accepted penalty yards only.
+- Penalties are attributed to the correct team based on Offense/Defense at the time of the foul.
+- Player-attributed penalties appear in a Penalties table:
+  Player | Flags | Yards | Penalty Detail.
+- Clicking a player opens Player Statistics with a Penalties card showing:
+  total flags, total yards, and penalty-type breakdown.
+- Next Play / succeeding-spot penalties are retained in penaltyHistory so they remain in analytics
+  after enforcement, including PAT/2PT and cross-period penalties.
+- Existing v0.42.6 data migrates forward.
+
+Note: historical penalties recorded before v0.42.7 are still calculated from their play context.
