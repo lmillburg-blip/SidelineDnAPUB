@@ -1,9 +1,9 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.50.2';
-const DBKEY='sidelineiq_v0502';
-const LEGACY_KEYS=['sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
+const BUILD='v0.50.3';
+const DBKEY='sidelineiq_v0503';
+const LEGACY_KEYS=['sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
 let selectedPlayId=null;
 let mobilePaneOpen='off';
@@ -1407,7 +1407,7 @@ function showPlayEditor(g,t,id=null,isNew=false){
  }
 }
 
-/* v0.50.2 — mobile-only unified workflow */
+/* v0.50.3 — mobile-only unified workflow */
 function mobileWorkflowMode(g){return g.mobileWorkflowMode||(g.kickoff||g.punt?'special':'scrimmage')}
 function setMobileWorkflowMode(g,mode){g.mobileWorkflowMode=mode==='special'?'special':'scrimmage';save();applyMobileWorkflow(g)}
 function applyMobileWorkflow(g){
@@ -1440,7 +1440,12 @@ function ensureMobileWorkflowShell(g){
  const rail=document.createElement('div');
  rail.className='mobile-workflow-rail';rail.id='mobileWorkflowRail';
  rail.innerHTML=`<div class="mobile-workflow-toggle" id="mobileWorkflowToggle"><button id="mobileScrimmageToggle" type="button">Scrimmage</button><button id="mobileSpecialToggle" type="button">Special Teams</button></div><div class="mobile-unified-content" id="mobileUnifiedContent"></div>`;
- fieldCol.parentElement.insertBefore(rail,fieldCol.nextSibling);
+ const oldParent=fieldCol.parentElement;
+ const stage=document.createElement('div');
+ stage.className='mobile-live-stage';
+ oldParent.insertBefore(stage,fieldCol);
+ stage.appendChild(fieldCol);
+ stage.appendChild(rail);
  const content=$('#mobileUnifiedContent');
  [off,def,st].filter(Boolean).forEach(x=>content.appendChild(x));
  $('#mobileScrimmageToggle').onclick=()=>setMobileWorkflowMode(g,'scrimmage');

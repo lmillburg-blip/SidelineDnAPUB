@@ -1,11 +1,13 @@
-SIDELINEIQ v0.50.2
+SIDELINEIQ v0.50.3
 
-MOBILE MODAL FIX
-- Long popup windows now scroll internally on mobile.
-- New Game can be scrolled through to the Create Game button.
-- Uses dynamic viewport height and iPhone safe-area spacing.
-- Prevents the background game screen from taking the scroll gesture while a long dialog is open.
+MOBILE LIVE-STAGE STRUCTURE FIX
+- Fixes the v0.50.2 mobile workflow collapsing into a narrow vertical strip.
+- Creates an explicit full-width two-column mobile stage.
+- Vertical field remains on the LEFT.
+- Scrimmage / Special Teams workflow remains on the RIGHT.
+- Scrimmage continues to integrate offense + defensive attribution.
+- Special Teams replaces the scrimmage pane when selected.
+- Popup scrolling fix from v0.50.2 is retained.
 - Desktop layout/workflow is intentionally unchanged.
-- Preserves the v0.50.1 mobile workflow redesign.
 
-Upload all files and folders from this ZIP to the repository root.
+Upload all files/folders from this ZIP to the repository root.

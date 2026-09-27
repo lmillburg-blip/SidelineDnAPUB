@@ -1988,3 +1988,108 @@ body.modal-open{overflow:hidden!important;touch-action:none}
     scroll-margin-bottom:100px!important;
   }
 }
+
+
+/* ==========================================================
+   v0.50.3 MOBILE LIVE-STAGE STRUCTURE FIX
+   The v0.50.1/2 rail was inserted into a narrow column parent.
+   This explicit stage guarantees FIELD LEFT + WORKFLOW RIGHT.
+   Desktop remains untouched.
+   ========================================================== */
+@media (max-width:760px){
+  .game-page .mobile-live-stage{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(112px,38%) minmax(0,62%)!important;
+    gap:6px!important;
+    align-items:start!important;
+    overflow:visible!important;
+    margin:0!important;
+    padding:0 6px 8px!important;
+  }
+
+  .game-page .mobile-live-stage > .mobile-field-rail{
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    order:initial!important;
+    margin:0!important;
+  }
+
+  .game-page .mobile-live-stage > .mobile-workflow-rail{
+    grid-column:2!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    order:initial!important;
+    margin:0!important;
+    overflow:visible!important;
+    border-left:0!important;
+  }
+
+  .game-page .mobile-live-stage .mobile-field-rail .field{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:min(72vh,720px)!important;
+    min-height:540px!important;
+  }
+
+  .game-page .mobile-workflow-toggle{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:4px!important;
+    padding:4px!important;
+  }
+
+  .game-page .mobile-workflow-toggle button{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    white-space:normal!important;
+    writing-mode:horizontal-tb!important;
+    transform:none!important;
+    padding:8px 3px!important;
+  }
+
+  .game-page .mobile-unified-content,
+  .game-page .mobile-unified-content > [data-mobile-unified]{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    writing-mode:horizontal-tb!important;
+    transform:none!important;
+  }
+
+  /* Keep the compact icon/action controls flowing across the usable right pane. */
+  .game-page .mobile-workflow-rail .button-grid,
+  .game-page .mobile-workflow-rail .action-grid,
+  .game-page .mobile-workflow-rail .defense-actions{
+    width:100%!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+
+  .game-page .mobile-workflow-rail .icon-btn,
+  .game-page .mobile-workflow-rail .action-icon-btn{
+    width:46px!important;
+    height:46px!important;
+    max-width:100%!important;
+  }
+
+  /* Do not allow inherited flex/grid sizing to turn labels into one-character columns. */
+  .game-page .mobile-workflow-rail label,
+  .game-page .mobile-workflow-rail button,
+  .game-page .mobile-workflow-rail input,
+  .game-page .mobile-workflow-rail select,
+  .game-page .mobile-workflow-rail textarea,
+  .game-page .mobile-workflow-rail p,
+  .game-page .mobile-workflow-rail div{
+    min-width:0;
+    word-break:normal!important;
+    overflow-wrap:break-word;
+  }
+}
