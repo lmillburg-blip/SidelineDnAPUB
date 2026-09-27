@@ -2093,3 +2093,185 @@ body.modal-open{overflow:hidden!important;touch-action:none}
     overflow-wrap:break-word;
   }
 }
+
+
+/* ==========================================================
+   v0.50.4 — MOBILE TWO-COLUMN WORKFLOW
+   This supersedes the experimental v0.50.1–.3 rail CSS.
+   Desktop is untouched.
+   ========================================================== */
+@media (max-width:900px){
+  .game-page .mobile-v0504-workspace{
+    display:grid!important;
+    grid-template-columns:minmax(118px,38%) minmax(0,62%)!important;
+    gap:5px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    align-items:start!important;
+    overflow:visible!important;
+  }
+
+  .game-page .mobile-v0504-field-rail{
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+
+  .game-page .mobile-v0504-workflow-rail{
+    grid-column:2!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    overflow:visible!important;
+  }
+
+  .game-page .mobile-v0504-toggle{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:3px!important;
+    width:100%!important;
+    padding:3px!important;
+    margin:0 0 4px!important;
+    background:#082b36!important;
+    border:1px solid #245565!important;
+    border-radius:8px!important;
+  }
+
+  .game-page .mobile-v0504-toggle button{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:34px!important;
+    padding:3px 2px!important;
+    margin:0!important;
+    border:1px solid #2c6475!important;
+    border-radius:6px!important;
+    background:#0a303c!important;
+    color:#d9edf4!important;
+    font-size:9px!important;
+    font-weight:800!important;
+    line-height:1.05!important;
+    white-space:normal!important;
+    writing-mode:horizontal-tb!important;
+    transform:none!important;
+  }
+
+  .game-page .mobile-v0504-toggle button.active{
+    background:#1e6bff!important;
+    border-color:#00d4ff!important;
+    color:#fff!important;
+  }
+
+  .game-page .mobile-v0504-mode{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  .game-page .mobile-v0504-mode[hidden]{display:none!important}
+
+  .game-page .mobile-v0504-mode .pane{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0 0 5px!important;
+    position:static!important;
+    float:none!important;
+    overflow:hidden!important;
+  }
+
+  .game-page .mobile-v0504-mode .pane-body{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    padding:5px!important;
+  }
+
+  /* Integrated scrimmage: compact offense + defensive attribution. */
+  .game-page .mobile-v0504-scrimmage .pane-title{
+    min-height:28px!important;
+    padding:5px 7px!important;
+    font-size:10px!important;
+  }
+  .game-page .mobile-v0504-scrimmage .pane.off .pane-title span:first-child::after{
+    content:" / DEFENSE";
+  }
+  .game-page .mobile-v0504-scrimmage .pane.def .pane-title{
+    display:none!important;
+  }
+  .game-page .mobile-v0504-scrimmage .pane.def{
+    border-top:0!important;
+    border-radius:0 0 7px 7px!important;
+    margin-top:-5px!important;
+  }
+
+  /* Keep all controls horizontal and inside the right rail. */
+  .game-page .mobile-v0504-workflow-rail *,
+  .game-page .mobile-v0504-workflow-rail *::before,
+  .game-page .mobile-v0504-workflow-rail *::after{box-sizing:border-box}
+
+  .game-page .mobile-v0504-workflow-rail input,
+  .game-page .mobile-v0504-workflow-rail select,
+  .game-page .mobile-v0504-workflow-rail textarea{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  .game-page .mobile-v0504-workflow-rail .icon-action-grid,
+  .game-page .mobile-v0504-workflow-rail .defense-icon-grid{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:3px!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  .game-page .mobile-v0504-workflow-rail .icon-action-btn{
+    width:34px!important;
+    min-width:34px!important;
+    height:34px!important;
+    min-height:34px!important;
+    flex:0 0 34px!important;
+    padding:2px!important;
+  }
+
+  .game-page .mobile-v0504-workflow-rail .icon-action-btn img,
+  .game-page .mobile-v0504-workflow-rail .play-action-icon{
+    width:27px!important;
+    height:27px!important;
+    object-fit:contain!important;
+  }
+
+  .game-page .mobile-v0504-field-rail .field-panel{
+    width:100%!important;
+    min-width:0!important;
+    padding:3px!important;
+    margin:0!important;
+  }
+
+  .game-page .mobile-v0504-field-rail .field{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:min(72vh,720px)!important;
+    min-height:540px!important;
+    margin:0!important;
+  }
+
+  .game-page .mobile-v0504-field-rail .mobile-field-save{
+    width:100%!important;
+    min-width:0!important;
+    height:42px!important;
+    margin:0 0 4px!important;
+    padding:4px!important;
+    font-size:11px!important;
+  }
+
+  /* Kill obsolete experimental rail if stale DOM/CSS ever survives cache. */
+  .game-page .mobile-live-stage,
+  .game-page #mobileWorkflowRail:not(.mobile-v0504-workflow-rail){
+    display:none!important;
+  }
+}
