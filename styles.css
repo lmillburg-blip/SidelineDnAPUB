@@ -2351,3 +2351,11 @@ body.modal-open{overflow:hidden!important;touch-action:none}
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
 }
+
+@media (max-width:900px){
+ .game-page input,.game-page select,.game-page textarea,.modal input,.modal select,.modal textarea{font-size:16px!important}
+ .defense-confirm-modal{width:min(92vw,520px)}
+ .defense-confirm-modal .defense-icon-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+ .defense-confirm-modal .defense-icon-grid button{min-width:0!important;width:100%!important;min-height:66px!important}
+ .defense-confirm-modal .modal-actions{position:sticky;bottom:0;background:#fff;padding-top:10px}
+}
