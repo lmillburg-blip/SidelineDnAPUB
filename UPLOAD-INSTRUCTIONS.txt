@@ -1,9 +1,10 @@
-SIDELINEIQ v0.50.5
+SIDELINEIQ v0.50.6
 
-HOTFIX
-- Fixes "Can't find variable: g" when opening a live game on mobile.
-- Root cause: v0.50.4 moved workflow-mode logic into composeMobileGameLayout(), but
-  renderGame() still invoked that function without passing the active game/team.
-- composeMobileGameLayout now explicitly receives g and t from renderGame.
-- v0.50.4 two-column mobile workflow is otherwise unchanged.
-- Desktop remains unchanged.
+MOBILE USABILITY UPDATE
+- Enlarges the draggable football target on mobile.
+- Player/jersey number entry fields request the numeric keypad on supported mobile browsers.
+- Applies numeric input mode to dynamically created workflows and popup forms too.
+- Preserves the v0.50.5 mobile workflow.
+- Desktop layout is unchanged.
+
+Upload all files/folders from this ZIP to the repository root.

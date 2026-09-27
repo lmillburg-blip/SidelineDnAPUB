@@ -1,9 +1,9 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.50.5';
-const DBKEY='sidelineiq_v0505';
-const LEGACY_KEYS=['sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
+const BUILD='v0.50.6';
+const DBKEY='sidelineiq_v0506';
+const LEGACY_KEYS=['sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
 let selectedPlayId=null;
 let mobilePaneOpen='off';
@@ -1052,7 +1052,7 @@ function renderGame(id){
  <div class="pane pen" data-pane="pen"><button type="button" class="pane-title" data-pane-toggle="pen"><span>PENALTY</span><span class="pane-chevron">⌄</span></button><div class="pane-body">${penaltyPane()}</div></div>
  </section>
  <section class="savebar"><button class="btn btn-light note-trigger" id="playNotes">✎ Notes</button><div class="save-actions"><button class="btn btn-primary" id="savePlay">✓ Save Play</button><button class="btn btn-light" id="clearPlay">Clear</button></div></section></main>`);
- document.querySelector('.topbar')?.remove();composeMobileGameLayout(g,t);bindGame(g,t);bindMobilePaneCollapse(g);drawField(g,t)
+ document.querySelector('.topbar')?.remove();composeMobileGameLayout(g,t);bindGame(g,t);enhancePlayerNumberKeyboards(document);bindMobilePaneCollapse(g);drawField(g,t)
 
 }
 
@@ -1406,7 +1406,7 @@ function showPlayEditor(g,t,id=null,isNew=false){
  }
 }
 
-/* v0.50.5 — mobile-only unified workflow */
+/* v0.50.6 — mobile-only unified workflow */
 function mobileWorkflowMode(g){return g.mobileWorkflowMode||(g.kickoff||g.punt?'special':'scrimmage')}
 function setMobileWorkflowMode(g,mode){g.mobileWorkflowMode=mode==='special'?'special':'scrimmage';save();applyMobileWorkflow(g)}
 function applyMobileWorkflow(g){
@@ -1528,6 +1528,40 @@ function isMobileGameLayout(){
 function important(el,prop,val){
  if(el)el.style.setProperty(prop,val,'important');
 }
+
+function enhancePlayerNumberKeyboards(root=document){
+  const selectors=[
+    'input[id*="player" i]','input[name*="player" i]',
+    'input[id*="qb" i]','input[name*="qb" i]',
+    'input[id*="receiver" i]','input[name*="receiver" i]',
+    'input[id*="carrier" i]','input[name*="carrier" i]',
+    'input[id*="defender" i]','input[name*="defender" i]',
+    'input[id*="kicker" i]','input[name*="kicker" i]',
+    'input[id*="punter" i]','input[name*="punter" i]',
+    'input[id*="returner" i]','input[name*="returner" i]',
+    'input[id*="center" i]','input[name*="center" i]',
+    'input[id*="interceptor" i]','input[name*="interceptor" i]',
+    'input[id*="recoverer" i]','input[name*="recoverer" i]',
+    'input[id*="blocker" i]','input[name*="blocker" i]',
+    'input[id*="forced" i]','input[name*="forced" i]'
+  ];
+  root.querySelectorAll(selectors.join(',')).forEach(el=>{
+    el.setAttribute('inputmode','numeric');
+    el.setAttribute('pattern','[0-9]*');
+    el.setAttribute('autocomplete','off');
+  });
+  // Catch generic inputs whose nearby label explicitly identifies a player/jersey number.
+  root.querySelectorAll('input').forEach(el=>{
+    const wrap=el.closest('label,.field-row,.form-row,.setup-field,.input-row')||el.parentElement;
+    const txt=(wrap?.textContent||'').trim();
+    if(/(?:player|qb|quarterback|receiver|carrier|defender|kicker|punter|returner|center|interceptor|recoverer|blocker|forced by)\s*#|jersey\s*(?:#|number)/i.test(txt)){
+      el.setAttribute('inputmode','numeric');
+      el.setAttribute('pattern','[0-9]*');
+      el.setAttribute('autocomplete','off');
+    }
+  });
+}
+
 function composeMobileGameLayout(g,t){
  const page=document.querySelector('.game-page');
  if(!page||!isMobileGameLayout())return false;
@@ -1576,7 +1610,7 @@ function composeMobileGameLayout(g,t){
  const root=document.createElement('section');
  root.className='mobile-score-workspace mobile-v0504-workspace';
 
- // v0.50.5: exactly TWO columns on mobile:
+ // v0.50.6: exactly TWO columns on mobile:
  // LEFT = field + Save Play; RIGHT = workflow toggle + one contextual workflow.
  const fieldRail=document.createElement('div');
  fieldRail.className='mobile-v0504-field-rail';
@@ -2491,4 +2525,16 @@ function drawField(g,t){
  let drag=false;ball.addEventListener('pointerdown',e=>{drag=true;ball.setPointerCapture(e.pointerId);e.preventDefault()});ball.addEventListener('pointermove',e=>{if(drag)setBall(e.clientX,e.clientY)});ball.addEventListener('pointerup',e=>{drag=false;setBall(e.clientX,e.clientY);if(g.kickoffPending||g.puntPending)renderGame(g.id)});inner.addEventListener('click',e=>{if(e.target===ball)return;setBall(e.clientX,e.clientY);if(g.kickoffPending||g.puntPending)renderGame(g.id)})
 }
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.warn));
+
+if(!window.__sidelineIQNumericObserver){
+  window.__sidelineIQNumericObserver=new MutationObserver(muts=>{
+    for(const m of muts){
+      for(const n of m.addedNodes){
+        if(n.nodeType===1) enhancePlayerNumberKeyboards(n);
+      }
+    }
+  });
+  window.__sidelineIQNumericObserver.observe(document.documentElement,{childList:true,subtree:true});
+}
+
 route();

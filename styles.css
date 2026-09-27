@@ -2275,3 +2275,27 @@ body.modal-open{overflow:hidden!important;touch-action:none}
     display:none!important;
   }
 }
+
+
+/* ==========================================================
+   v0.50.6 MOBILE INPUT / BALL USABILITY
+   ========================================================== */
+@media (max-width:900px){
+  .game-page .ball,
+  .game-page .football,
+  .game-page .field-ball,
+  .game-page [data-ball]{
+    width:38px!important;
+    height:38px!important;
+    min-width:38px!important;
+    min-height:38px!important;
+    touch-action:none!important;
+    cursor:grab!important;
+  }
+  .game-page .ball:active,
+  .game-page .football:active,
+  .game-page .field-ball:active,
+  .game-page [data-ball]:active{
+    cursor:grabbing!important;
+  }
+}
