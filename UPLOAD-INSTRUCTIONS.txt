@@ -1,13 +1,9 @@
-SIDELINEIQ v0.50.4
+SIDELINEIQ v0.50.5
 
-ROOT-CAUSE MOBILE WORKFLOW FIX
-- Removed the competing post-render mobile layout system from v0.50.1-.3.
-- Rebuilt the EXISTING composeMobileGameLayout() into the intended two-column structure.
-- LEFT: vertical field + Save Play.
-- RIGHT: Scrimmage / Special Teams toggle.
-- Scrimmage: offense + defensive attribution integrated in one rail; penalty remains available/collapsible.
-- Special Teams: special-teams workflow only.
-- Popup scrolling fix retained.
-- Desktop intentionally unchanged.
-
-Upload all files/folders to the GitHub repository root and hard refresh.
+HOTFIX
+- Fixes "Can't find variable: g" when opening a live game on mobile.
+- Root cause: v0.50.4 moved workflow-mode logic into composeMobileGameLayout(), but
+  renderGame() still invoked that function without passing the active game/team.
+- composeMobileGameLayout now explicitly receives g and t from renderGame.
+- v0.50.4 two-column mobile workflow is otherwise unchanged.
+- Desktop remains unchanged.

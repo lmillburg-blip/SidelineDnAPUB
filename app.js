@@ -1,9 +1,9 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.50.4';
-const DBKEY='sidelineiq_v0504';
-const LEGACY_KEYS=['sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
+const BUILD='v0.50.5';
+const DBKEY='sidelineiq_v0505';
+const LEGACY_KEYS=['sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
 let selectedPlayId=null;
 let mobilePaneOpen='off';
@@ -1052,7 +1052,7 @@ function renderGame(id){
  <div class="pane pen" data-pane="pen"><button type="button" class="pane-title" data-pane-toggle="pen"><span>PENALTY</span><span class="pane-chevron">⌄</span></button><div class="pane-body">${penaltyPane()}</div></div>
  </section>
  <section class="savebar"><button class="btn btn-light note-trigger" id="playNotes">✎ Notes</button><div class="save-actions"><button class="btn btn-primary" id="savePlay">✓ Save Play</button><button class="btn btn-light" id="clearPlay">Clear</button></div></section></main>`);
- document.querySelector('.topbar')?.remove();composeMobileGameLayout();bindGame(g,t);bindMobilePaneCollapse(g);drawField(g,t)
+ document.querySelector('.topbar')?.remove();composeMobileGameLayout(g,t);bindGame(g,t);bindMobilePaneCollapse(g);drawField(g,t)
 
 }
 
@@ -1406,7 +1406,7 @@ function showPlayEditor(g,t,id=null,isNew=false){
  }
 }
 
-/* v0.50.4 — mobile-only unified workflow */
+/* v0.50.5 — mobile-only unified workflow */
 function mobileWorkflowMode(g){return g.mobileWorkflowMode||(g.kickoff||g.punt?'special':'scrimmage')}
 function setMobileWorkflowMode(g,mode){g.mobileWorkflowMode=mode==='special'?'special':'scrimmage';save();applyMobileWorkflow(g)}
 function applyMobileWorkflow(g){
@@ -1528,7 +1528,7 @@ function isMobileGameLayout(){
 function important(el,prop,val){
  if(el)el.style.setProperty(prop,val,'important');
 }
-function composeMobileGameLayout(){
+function composeMobileGameLayout(g,t){
  const page=document.querySelector('.game-page');
  if(!page||!isMobileGameLayout())return false;
 
@@ -1576,7 +1576,7 @@ function composeMobileGameLayout(){
  const root=document.createElement('section');
  root.className='mobile-score-workspace mobile-v0504-workspace';
 
- // v0.50.4: exactly TWO columns on mobile:
+ // v0.50.5: exactly TWO columns on mobile:
  // LEFT = field + Save Play; RIGHT = workflow toggle + one contextual workflow.
  const fieldRail=document.createElement('div');
  fieldRail.className='mobile-v0504-field-rail';
