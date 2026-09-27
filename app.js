@@ -1,9 +1,9 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.50.8';
-const DBKEY='sidelineiq_v0508';
-const LEGACY_KEYS=['sidelineiq_v0507','sidelineiq_v0506','sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
+const BUILD='v0.50.9';
+const DBKEY='sidelineiq_v0509';
+const LEGACY_KEYS=['sidelineiq_v0508','sidelineiq_v0507','sidelineiq_v0506','sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
 let selectedPlayId=null;
 let mobilePaneOpen='off';
@@ -1406,7 +1406,7 @@ function showPlayEditor(g,t,id=null,isNew=false){
  }
 }
 
-/* v0.50.8 — mobile-only unified workflow */
+/* v0.50.9 — mobile-only unified workflow */
 function mobileWorkflowMode(g){return g.mobileWorkflowMode||(g.kickoff||g.punt?'special':'scrimmage')}
 function setMobileWorkflowMode(g,mode){g.mobileWorkflowMode=mode==='special'?'special':'scrimmage';save();applyMobileWorkflow(g)}
 function applyMobileWorkflow(g){
@@ -1549,6 +1549,16 @@ function enhancePlayerNumberKeyboards(root=document){
     el.setAttribute('inputmode','numeric');
     el.setAttribute('pattern','[0-9]*');
     el.setAttribute('autocomplete','off');
+    if(isMobileGameLayout())el.style.fontSize='16px';
+    if(!el.dataset.siqFocusReset){
+      el.dataset.siqFocusReset='1';
+      el.addEventListener('focus',()=>{el.dataset.siqScrollX=String(window.scrollX);el.dataset.siqScrollY=String(window.scrollY)});
+      el.addEventListener('blur',()=>{
+        if(!isMobileGameLayout())return;
+        const x=Number(el.dataset.siqScrollX||0),y=Number(el.dataset.siqScrollY||0);
+        setTimeout(()=>window.scrollTo({left:x,top:y,behavior:'auto'}),180);
+      });
+    }
   });
   // Catch generic inputs whose nearby label explicitly identifies a player/jersey number.
   root.querySelectorAll('input').forEach(el=>{
@@ -1558,6 +1568,16 @@ function enhancePlayerNumberKeyboards(root=document){
       el.setAttribute('inputmode','numeric');
       el.setAttribute('pattern','[0-9]*');
       el.setAttribute('autocomplete','off');
+      if(isMobileGameLayout())el.style.fontSize='16px';
+      if(!el.dataset.siqFocusReset){
+        el.dataset.siqFocusReset='1';
+        el.addEventListener('focus',()=>{el.dataset.siqScrollX=String(window.scrollX);el.dataset.siqScrollY=String(window.scrollY)});
+        el.addEventListener('blur',()=>{
+          if(!isMobileGameLayout())return;
+          const x=Number(el.dataset.siqScrollX||0),y=Number(el.dataset.siqScrollY||0);
+          setTimeout(()=>window.scrollTo({left:x,top:y,behavior:'auto'}),180);
+        });
+      }
     }
   });
 }
@@ -1610,7 +1630,7 @@ function composeMobileGameLayout(g,t){
  const root=document.createElement('section');
  root.className='mobile-score-workspace mobile-v0504-workspace';
 
- // v0.50.8: exactly TWO columns on mobile:
+ // v0.50.9: exactly TWO columns on mobile:
  // LEFT = field + Save Play; RIGHT = workflow toggle + one contextual workflow.
  const fieldRail=document.createElement('div');
  fieldRail.className='mobile-v0504-field-rail';
@@ -2168,19 +2188,41 @@ function bindPenalty(g){
  activate('#penSideToggle');activate('#penApplyToggle');activate('#penStatusToggle');
 
  const defaults={
-   'Holding':{yards:10,side:'Offense',negate:true,repeat:false,auto:false},
-   'False Start':{yards:5,side:'Offense',negate:true,repeat:true,auto:false},
-   'Delay of Game':{yards:5,side:'Offense',negate:true,repeat:true,auto:false},
-   'Offside':{yards:5,side:'Defense',negate:true,repeat:true,auto:false},
-   'Illegal Formation':{yards:5,side:'Offense',negate:true,repeat:false,auto:false},
-   'Illegal Motion':{yards:5,side:'Offense',negate:true,repeat:false,auto:false}
+   'Holding':{yards:10,side:'Offense',spot:true,negate:false,repeat:false,auto:false},
+   'False Start':{yards:5,side:'Offense',spot:false,negate:true,repeat:true,auto:false},
+   'Delay of Game':{yards:5,side:'Offense',spot:false,negate:true,repeat:true,auto:false},
+   'Offside':{yards:5,side:'Defense',spot:false,negate:true,repeat:true,auto:false},
+   'Illegal Formation':{yards:5,side:'Offense',spot:false,negate:true,repeat:false,auto:false},
+   'Illegal Motion':{yards:5,side:'Offense',spot:false,negate:true,repeat:false,auto:false}
  };
  const setSide=side=>{$$('#penSideToggle button').forEach(b=>b.classList.toggle('active',b.dataset.penSide===side))};
+ const setFoulSpotFromBall=()=>{
+   if(!$('#foulSpotSide')||!$('#foulSpotYard'))return;
+   const label=fmtDrive(g.los,g.driveDir||1);
+   if(label==='50'){$('#foulSpotSide').value='50';$('#foulSpotYard').value='';return}
+   const parts=label.split(' ');
+   $('#foulSpotSide').value=parts[0]||'OWN';
+   $('#foulSpotYard').value=parts[1]||'';
+ };
  const applyDefaults=()=>{
    const d=defaults[$('#penType')?.value];if(!d)return;
-   $('#penYards').value=d.yards;setSide(d.side);$('#negate').checked=d.negate;$('#repeatDown').checked=d.repeat;$('#autoFirst').checked=d.auto;$('#spotFoul').checked=false;toggleFoulSpot();
+   $('#penYards').value=d.yards;setSide(d.side);
+   $('#spotFoul').checked=!!d.spot;
+   $('#negate').checked=!!d.negate;
+   $('#repeatDown').checked=!!d.repeat;
+   $('#autoFirst').checked=!!d.auto;
+   if(d.spot)setFoulSpotFromBall();
+   toggleFoulSpot();
  };
- const toggleFoulSpot=()=>$('#foulSpotFields')?.classList.toggle('hidden',!$('#spotFoul')?.checked);
+ const toggleFoulSpot=()=>{
+   const checked=!!$('#spotFoul')?.checked;
+   $('#foulSpotFields')?.classList.toggle('hidden',!checked);
+   if(checked){
+     if($('#negate'))$('#negate').checked=false;
+     const side=$('#foulSpotSide')?.value,yard=$('#foulSpotYard')?.value;
+     if(!side||(side!=='50'&&yard===''))setFoulSpotFromBall();
+   }
+ };
  if($('#spotFoul'))$('#spotFoul').onchange=toggleFoulSpot;
  if($('#penType')){$('#penType').onchange=applyDefaults;applyDefaults()}
  toggleFoulSpot();

@@ -1,14 +1,9 @@
-SIDELINEIQ v0.50.8 HOTFIX
+SIDELINEIQ v0.50.9
 
-Fixes the mobile game-screen crash introduced by the v0.50.7 penalty-popup conversion.
-
-Root cause:
-The penalty pane was intentionally removed from the mobile main DOM, but bindPenalty()
-was still called during normal game rendering and attempted to attach onchange handlers
-to penalty fields that only exist after the popup opens.
-
-Fix:
-Penalty event binding now safely checks for popup fields before attaching handlers.
-The popup still binds normally after it opens.
-
-All v0.50.7 workflow changes are retained.
+MOBILE / PENALTY POLISH
+- Player-number inputs render at 16px on mobile to prevent Safari focus zoom.
+- When a number field loses focus, the screen restores its pre-keyboard scroll position.
+- Spot-foul enforcement initializes to the current football location.
+- Holding now smart-defaults to spot-of-foul enforcement.
+- Spot-foul and previous-LOS enforcement defaults are kept mutually consistent.
+- All v0.50.8 fixes retained.
