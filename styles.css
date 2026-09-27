@@ -1928,3 +1928,63 @@ body.modal-open{overflow:hidden!important;touch-action:none}
  .game-page [data-mobile-unified="defense"] .action-grid button,
  .game-page [data-mobile-unified="defense"] .button-grid button{min-width:0!important;width:100%!important;padding:4px 1px!important;font-size:9px!important}
 }
+
+
+/* ==========================================================
+   v0.50.2 MOBILE MODAL SCROLL FIX
+   Mobile only. Desktop is intentionally unchanged.
+   ========================================================== */
+@media (max-width:760px){
+  body.modal-open{
+    overflow:hidden!important;
+  }
+
+  .modal,
+  .modal-overlay,
+  .dialog-overlay,
+  .overlay{
+    overscroll-behavior:contain;
+  }
+
+  .modal-card,
+  .modal-content,
+  .dialog,
+  .dialog-card{
+    max-height:calc(100dvh - 24px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    touch-action:pan-y!important;
+    padding-bottom:calc(24px + env(safe-area-inset-bottom))!important;
+    scroll-padding-bottom:calc(90px + env(safe-area-inset-bottom))!important;
+  }
+
+  /* The app's modal shells use fixed overlays. Make the overlay itself a
+     second scroll safety net so long forms can always reach their actions. */
+  .modal,
+  .modal-overlay,
+  .dialog-overlay{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    align-items:flex-start!important;
+    padding-top:max(10px,env(safe-area-inset-top))!important;
+    padding-bottom:max(10px,env(safe-area-inset-bottom))!important;
+  }
+
+  /* New Game / form actions must remain reachable even on short screens. */
+  .modal-card form,
+  .modal-content form,
+  .dialog form,
+  .dialog-card form{
+    min-height:0!important;
+  }
+
+  .modal-card button[type="submit"],
+  .modal-content button[type="submit"],
+  .dialog button[type="submit"],
+  .dialog-card button[type="submit"]{
+    scroll-margin-bottom:100px!important;
+  }
+}

@@ -1,12 +1,11 @@
-SIDELINEIQ v0.50.1
-MOBILE-ONLY WORKFLOW REDESIGN
+SIDELINEIQ v0.50.2
 
-- Vertical field is the left rail.
-- Right rail toggles Scrimmage / Special Teams.
-- Scrimmage integrates the existing offense and defense entry controls in one rail.
-- Special Teams replaces that rail when selected.
-- Existing event/stat logic is reused.
+MOBILE MODAL FIX
+- Long popup windows now scroll internally on mobile.
+- New Game can be scrolled through to the Create Game button.
+- Uses dynamic viewport height and iPhone safe-area spacing.
+- Prevents the background game screen from taking the scroll gesture while a long dialog is open.
 - Desktop layout/workflow is intentionally unchanged.
-- Migrates v0.43.0 data.
+- Preserves the v0.50.1 mobile workflow redesign.
 
-Upload every file/folder in this ZIP to the GitHub repository root.
+Upload all files and folders from this ZIP to the repository root.
