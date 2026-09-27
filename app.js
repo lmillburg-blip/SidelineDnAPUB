@@ -1,9 +1,9 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.50.6';
-const DBKEY='sidelineiq_v0506';
-const LEGACY_KEYS=['sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
+const BUILD='v0.50.7';
+const DBKEY='sidelineiq_v0507';
+const LEGACY_KEYS=['sidelineiq_v0506','sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
 let selectedPlayId=null;
 let mobilePaneOpen='off';
@@ -1074,7 +1074,7 @@ function interceptionFields(g){
 }
 function sackFields(){
  const sacks=currentPlay.defenders.filter(d=>d.action==='Sack');
- return `<div class="sack-workflow"><div class="section-label">Defensive Sack Credit</div><div class="form-row"><label>Defender #</label><input id="sackDefender" inputmode="numeric" placeholder="#"><div class="seg compact-credit" id="sackCredit"><button class="active" data-credit="1">1.0</button><button data-credit="0.5">0.5</button></div><button class="btn btn-light" id="addSackCredit">Add Sack</button></div><div class="summary">${sacks.length?sacks.map(d=>`#${esc(d.n)} Sack ${Number(d.credit??1).toFixed(1)}`).join(' · '):'Add the defender(s) credited with the sack.'}</div></div>`
+ return `<div class="sack-workflow"><div class="section-label">Defensive Sack Credit</div><div class="form-row"><label>Defender #</label><input id="sackDefender" inputmode="numeric" placeholder="#"><button class="btn btn-light" id="addSackCredit">Add Sack</button></div><div class="summary">${sacks.length?sacks.map(d=>`#${esc(d.n)} Sack ${Number(d.credit??1).toFixed(1)}`).join(' · '):'Add the defender(s) credited with the sack. One sacker = 1.0; multiple sackers = 0.5 each.'}</div></div>`
 }
 function passFields(g){
  const m=rememberedPlayers(g,g.poss),last=m.qb[0]||'';
@@ -1082,7 +1082,7 @@ function passFields(g){
 }
 
 function defensePane(g){
- return `<div class="form-row"><label>Player #</label><input id="defNum" inputmode="numeric"><div class="seg compact-credit" id="defCredit"><button class="active" data-credit="1">1.0</button><button data-credit="0.5">0.5</button></div></div><div class="section-label">Action</div><div class="action-grid defense-icon-grid">${iconButton('tackle','Tackle','data-def="Tackle"')}${iconButton('sack','Sack','data-def="Sack"')}${iconButton('pbu','Pass Breakup','data-def="PBU"','alt')}${iconButton('pressure','Pressure','data-def="Pressure"','alt')}${iconButton('safety','Safety +2','data-dscore="Safety"','score')}${iconButton('deftd','Defensive TD +6','data-dscore="Def TD"','score')}<button class="alt mobile-def-extra" data-def="Forced Fumble">Forced Fumble</button><button class="alt mobile-def-extra" data-def="Fumble Recovery">Fumble Recovery</button></div><div class="summary" id="defList">No defensive actions yet.</div>${defenseMemory(g)}`
+ return `<div class="form-row"><label>Player #</label><input id="defNum" inputmode="numeric"></div><div class="section-label">Action</div><div class="action-grid defense-icon-grid">${iconButton('tackle','Tackle','data-def="Tackle"')}${iconButton('sack','Sack','data-def="Sack"')}${iconButton('pbu','Pass Breakup','data-def="PBU"','alt')}${iconButton('pressure','Pressure','data-def="Pressure"','alt')}${iconButton('safety','Safety +2','data-dscore="Safety"','score')}${iconButton('deftd','Defensive TD +6','data-dscore="Def TD"','score')}<button class="alt mobile-def-extra" data-def="Forced Fumble">Forced Fumble</button><button class="alt mobile-def-extra" data-def="Fumble Recovery">Fumble Recovery</button></div><div class="summary" id="defList">No defensive actions yet.</div>${defenseMemory(g)}`
 }
 
 function penaltyPane(){return `<div class="section-label">Side</div><div class="seg pen-toggle" id="penSideToggle"><button class="active" data-pen-side="Offense">Offense</button><button data-pen-side="Defense">Defense</button></div><div class="section-label">Apply To</div><div class="seg pen-toggle" id="penApplyToggle"><button class="active" data-apply="current">Current</button><button data-apply="former">Former</button><button data-apply="next">Next Play</button></div><div class="section-label">Status</div><div class="seg pen-toggle" id="penStatusToggle"><button class="active" data-status="accepted">Accepted</button><button data-status="declined">Declined</button></div><div class="form-row"><select id="penType"><option>Holding</option><option>False Start</option><option>Delay of Game</option><option>Offside</option><option>Pass Interference</option><option>Personal Foul</option><option>Illegal Formation</option><option>Illegal Motion</option><option>Facemask</option><option>Unsportsmanlike Conduct</option><option>Other</option></select><input id="penYards" type="number" value="10" aria-label="Penalty yards" placeholder="Yards"></div><div class="form-row"><input id="penPlayer" inputmode="numeric" placeholder="Player #" aria-label="Player number"></div><div class="pen-checks"><label><input type="checkbox" id="spotFoul"> Enforce from spot of foul</label><div id="foulSpotFields" class="foul-spot-fields hidden"><span class="field-hint">Spot of foul</span><select id="foulSpotSide" aria-label="Spot of foul side"><option>OWN</option><option>OPP</option><option>50</option></select><input id="foulSpotYard" type="number" min="0" max="49" placeholder="Yard" aria-label="Spot of foul yard line"></div><label><input type="checkbox" id="negate"> Ignore play yardage; enforce from previous LOS</label><label><input type="checkbox" id="repeatDown"> Repeat down / no play</label><label><input type="checkbox" id="autoFirst"> Automatic first down</label></div><div class="form-row"><button class="btn btn-light" id="attachPenalty">Apply Penalty</button><button class="btn btn-light" id="clearPenalty">Clear Current</button></div><div class="summary penalty-list" id="penSummary">No penalties applied.</div><div class="summary pending-penalty-list" id="pendingPenSummary"></div>`}
@@ -1406,7 +1406,7 @@ function showPlayEditor(g,t,id=null,isNew=false){
  }
 }
 
-/* v0.50.6 — mobile-only unified workflow */
+/* v0.50.7 — mobile-only unified workflow */
 function mobileWorkflowMode(g){return g.mobileWorkflowMode||(g.kickoff||g.punt?'special':'scrimmage')}
 function setMobileWorkflowMode(g,mode){g.mobileWorkflowMode=mode==='special'?'special':'scrimmage';save();applyMobileWorkflow(g)}
 function applyMobileWorkflow(g){
@@ -1610,7 +1610,7 @@ function composeMobileGameLayout(g,t){
  const root=document.createElement('section');
  root.className='mobile-score-workspace mobile-v0504-workspace';
 
- // v0.50.6: exactly TWO columns on mobile:
+ // v0.50.7: exactly TWO columns on mobile:
  // LEFT = field + Save Play; RIGHT = workflow toggle + one contextual workflow.
  const fieldRail=document.createElement('div');
  fieldRail.className='mobile-v0504-field-rail';
@@ -1631,11 +1631,17 @@ function composeMobileGameLayout(g,t){
  const special=document.createElement('div');
  special.className='mobile-v0504-mode mobile-v0504-special';
 
- // Offense + defense are now one scrimmage workflow. Penalty remains available
- // as a collapsible part of that same workflow instead of a third screen column.
- scrimmage.append(off,def,pen);
+ // Offense + defense are one scrimmage workflow. Penalty is now a modal action
+ // so it does not consume vertical workflow space.
+ scrimmage.append(off,def);
  special.append(st);
- workflowRail.append(workflowToggle,scrimmage,special);
+ const penaltyTrigger=document.createElement('button');
+ penaltyTrigger.id='mobilePenaltyPopup';penaltyTrigger.type='button';
+ penaltyTrigger.className='mobile-penalty-popup-trigger';
+ penaltyTrigger.innerHTML='<span>PENALTY</span><span>+</span>';
+ penaltyTrigger.onclick=()=>showPenaltyPopup(g);
+ workflowRail.append(workflowToggle,scrimmage,special,penaltyTrigger);
+ pen.remove();
  root.append(fieldRail,workflowRail);
 
  main.replaceWith(root);workbench.remove();recent?.remove();
@@ -2067,22 +2073,33 @@ function bindOffDynamic(g){
  };
  if($('#intReturnTD'))$('#intReturnTD').onchange=e=>currentPlay.interception.returnTD=e.target.checked;
 
- $$('#sackCredit [data-credit]').forEach(b=>b.onclick=()=>{$$('#sackCredit [data-credit]').forEach(x=>x.classList.remove('active'));b.classList.add('active')});
  if($('#addSackCredit'))$('#addSackCredit').onclick=()=>{
    const n=$('#sackDefender').value.trim();if(!n)return toast('Enter defender number.');
-   const credit=Number($('#sackCredit .active')?.dataset.credit||1);
-   currentPlay.defenders.push({n,action:'Sack',credit});$('#sackDefender').value='';
+   currentPlay.defenders.push({n,action:'Sack',credit:1});
+   normalizeLiveDefensiveCredits(currentPlay);
+   $('#sackDefender').value='';
    renderDefenders();$('#offDynamic').innerHTML=passFields(g);bindOffDynamic(g)
  }
 }
 
+
+function normalizeLiveDefensiveCredits(play=currentPlay){
+  if(!play?.defenders)return;
+  ['Tackle','Sack'].forEach(action=>{
+    const rows=play.defenders.filter(d=>d.action===action);
+    const credit=rows.length>1?0.5:1;
+    rows.forEach(d=>d.credit=credit);
+  });
+}
+
 function bindDefense(g){
- $$('#defCredit [data-credit]').forEach(b=>b.onclick=()=>{$$('#defCredit [data-credit]').forEach(x=>x.classList.remove('active'));b.classList.add('active')});
  $$('[data-def]').forEach(b=>b.onclick=()=>{
    const n=$('#defNum').value.trim();if(!n)return toast('Enter defender number.');
-   const action=b.dataset.def,credit=(action==='Tackle'||action==='TFL'||action==='Sack')?Number($('#defCredit .active')?.dataset.credit||1):1;
+   const action=b.dataset.def,credit=1;
    const yards=0;
-   currentPlay.defenders.push({n,action,credit,yards});$('#defNum').value='';renderDefenders()
+   currentPlay.defenders.push({n,action,credit,yards});
+   normalizeLiveDefensiveCredits(currentPlay);
+   $('#defNum').value='';renderDefenders()
  });
  $$('[data-dscore]').forEach(b=>b.onclick=()=>{currentPlay.score=b.dataset.dscore;toast(`${b.textContent} selected`)});
  $$('[data-memory-role="def"]').forEach(b=>b.onclick=()=>{if($('#defNum')){$('#defNum').value=b.dataset.memoryPlayer;$('#defNum').focus()}})
@@ -2131,6 +2148,19 @@ function applyPendingPenalties(g){
  }
  g.pendingPenalties=[];
  return true
+}
+
+
+function showPenaltyPopup(g){
+  showModal(`<div class="mobile-penalty-modal">
+    <div class="compact-modal-head">
+      <div><div class="eyebrow">GAME WORKFLOW</div><h2>Penalty</h2><p>Attach a flag to the current, former, or next play.</p></div>
+      <button class="btn btn-light" data-close>Close</button>
+    </div>
+    <div class="mobile-penalty-modal-body">${penaltyPane()}</div>
+  </div>`);
+  bindPenalty(g);
+  enhancePlayerNumberKeyboards(document);
 }
 
 function bindPenalty(g){
@@ -2298,7 +2328,7 @@ function finishPunt(g){
  g.poss=result==='Blocked'?(p.recoveryTeam||p.receivingTeam):p.receivingTeam;g.driveDir=g.poss===p.receivingTeam?returnDir:kickDir;
  if(returnTD){score(g,p.receivingTeam,6);g.los=touchdownSpot(returnDir);g.down=1;g.toGo=10;g.awaitingTry=true;g.tryType=null}
  else{g.los=end;g.down=1;g.toGo=Math.min(10,Math.max(1,returnDir===1?100-end:end));g.awaitingTry=false;g.tryType=null}
- g.puntPending=false;g.punt=null;save();renderGame(g.id)
+ g.puntPending=false;g.punt=null;g.mobileWorkflowMode='scrimmage';save();renderGame(g.id)
 }
 function finishKickoff(g){
  const k=g.kickoff;if(k.returnEnd==null)return;const before=snapshot(g),end=clamp(k.returnEnd),kickDir=k.kickDir||1,returnDir=-kickDir,kickDistance=Math.abs(k.landing-(k.startSpot??k.startYard)),returnYards=k.touchback?0:Math.abs(end-k.landing),returnTD=!!k.returnTD&&!k.touchback;
@@ -2308,7 +2338,7 @@ function finishKickoff(g){
  g.poss=result==='Onside'?(k.onsideRecoveryTeam||k.receivingTeam):k.receivingTeam;g.driveDir=g.poss===k.receivingTeam?returnDir:kickDir;
  if(returnTD){score(g,k.receivingTeam,6);g.los=touchdownSpot(returnDir);g.down=1;g.toGo=10;g.awaitingTry=true;g.tryType=null}
  else{g.los=end;g.down=1;g.toGo=Math.min(10,Math.max(1,returnDir===1?100-end:end));g.awaitingTry=false;g.tryType=null}
- g.kickoffPending=false;g.kickoff=null;save();renderGame(g.id)
+ g.kickoffPending=false;g.kickoff=null;g.mobileWorkflowMode='scrimmage';save();renderGame(g.id)
 }
 function score(g,side,pts){if(side==='team')g.teamScore+=pts;else g.oppScore+=pts}
 function beginKickoffAfterScore(g,scoringSide){const dir=g.driveDir||1,from=g.kickoffYard||40;g.tryType=null;g.kickoffPending=true;g.kickoff={phase:'kick',kickingTeam:scoringSide,receivingTeam:other(scoringSide),startYard:from,kickDir:dir,startSpot:screenSpot(from,dir),landing:null,returnEnd:null,kicker:'',returner:'',tacklers:[],touchback:false,result:'Return',onsideRecoveryTeam:null,recoverer:''};g.awaitingTry=false}
@@ -2360,6 +2390,7 @@ function savePlay(g,t){
    else if(currentPlay.kickGood)beginKickoffAfterScore(g,g.poss);
    else{if(!blocked||kickRecoveryTeam==='Defense'){g.poss=other(g.poss);g.driveDir=-(g.driveDir||1)}g.down=1;g.toGo=10;g.los=start}
    applyPendingPenalties(g);
+   g.mobileWorkflowMode=(g.kickoffPending||g.puntPending)?'special':'scrimmage';
    save();renderGame(g.id);return
  }
 

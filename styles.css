@@ -2277,25 +2277,77 @@ body.modal-open{overflow:hidden!important;touch-action:none}
 }
 
 
+
+
+
 /* ==========================================================
-   v0.50.6 MOBILE INPUT / BALL USABILITY
+   v0.50.7 MOBILE WORKFLOW POLISH
    ========================================================== */
 @media (max-width:900px){
-  .game-page .ball,
-  .game-page .football,
-  .game-page .field-ball,
-  .game-page [data-ball]{
-    width:38px!important;
-    height:38px!important;
-    min-width:38px!important;
-    min-height:38px!important;
+  /* Keep the larger drag target, but preserve an actual football silhouette. */
+  .game-page .football{
+    width:42px!important;
+    height:26px!important;
+    min-width:42px!important;
+    min-height:26px!important;
+    border-radius:58% 42% 58% 42%!important;
+    border:2px solid #F4E5C8!important;
+    background:#7E441E!important;
+    box-shadow:0 3px 9px rgba(0,0,0,.58),0 0 0 2px rgba(255,255,255,.10)!important;
     touch-action:none!important;
     cursor:grab!important;
   }
-  .game-page .ball:active,
-  .game-page .football:active,
-  .game-page .field-ball:active,
-  .game-page [data-ball]:active{
-    cursor:grabbing!important;
+  .game-page .football:before{
+    content:""!important;
+    position:absolute!important;
+    inset:-9px!important;
+    background:transparent!important;
+  }
+  .game-page .football:after{
+    content:""!important;
+    position:absolute!important;
+    width:16px!important;
+    height:2px!important;
+    left:11px!important;
+    top:8px!important;
+    background:#fff!important;
+    box-shadow:0 5px 0 #fff!important;
+  }
+  .game-page .football:active{cursor:grabbing!important}
+
+  .mobile-penalty-popup-trigger{
+    width:100%!important;
+    min-height:42px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    padding:8px 14px!important;
+    margin-top:6px!important;
+    border:1px solid #ff7180!important;
+    border-radius:8px!important;
+    background:linear-gradient(180deg,#d63748,#b82435)!important;
+    color:#fff!important;
+    font-weight:900!important;
+    font-size:15px!important;
+    letter-spacing:.3px!important;
+  }
+  .mobile-penalty-popup-trigger span:last-child{
+    font-size:25px!important;
+    line-height:1!important;
+  }
+  .modal .mobile-penalty-modal{
+    width:min(94vw,560px)!important;
+  }
+  .mobile-penalty-modal-body{
+    padding:4px 2px 8px!important;
+  }
+  .mobile-penalty-modal .pen-toggle{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  .mobile-penalty-modal #penSideToggle,
+  .mobile-penalty-modal #penStatusToggle{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
 }

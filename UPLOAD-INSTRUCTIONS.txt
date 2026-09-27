@@ -1,10 +1,14 @@
-SIDELINEIQ v0.50.6
+SIDELINEIQ v0.50.7
 
-MOBILE USABILITY UPDATE
-- Enlarges the draggable football target on mobile.
-- Player/jersey number entry fields request the numeric keypad on supported mobile browsers.
-- Applies numeric input mode to dynamically created workflows and popup forms too.
-- Preserves the v0.50.5 mobile workflow.
-- Desktop layout is unchanged.
+MOBILE WORKFLOW POLISH
+- Football marker keeps the larger touch target but is football-shaped again.
+- Completing a kickoff or punt automatically returns the mobile workflow to Scrimmage.
+- Live tackle/sack credit is automatic:
+    one tackler/sacker = 1.0
+    multiple tacklers/sackers = 0.5 each
+  The 1.0 / 0.5 selection buttons are removed from live entry.
+- Mobile Penalty is now a popup instead of a collapsible workflow pane.
+- Numeric player keypad behavior from v0.50.6 is retained.
+- Desktop workflow/layout is preserved.
 
 Upload all files/folders from this ZIP to the repository root.
