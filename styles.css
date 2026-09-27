@@ -1870,3 +1870,61 @@ body.modal-open{overflow:hidden!important;touch-action:none}
  .penalty-team-summary b{font-size:18px}
  .penalty-table td:last-child{min-width:95px}
 }
+
+/* v0.43.0 — All Plays correction workspace */
+.allplays-head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.full-play-editor{max-width:1040px!important}
+.retro-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.retro-subsection{border-top:1px solid #dce6eb;margin-top:10px;padding-top:10px}
+.retro-subsection h4{margin:0 0 8px;color:#0b2e3a;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.retro-penalty-row{
+ display:grid;grid-template-columns:110px 110px minmax(150px,1fr) 80px 95px auto;
+ gap:7px;align-items:center;margin-bottom:7px
+}
+.retro-penalty-row input,.retro-penalty-row select{
+ width:100%;min-width:0;padding:8px;border:1px solid #cbd8df;border-radius:8px;background:#fff;color:#102635
+}
+.retro-empty-penalty{padding:10px;color:#64748b;background:#fff;border:1px dashed #cbd5e1;border-radius:8px;margin-bottom:9px}
+.retro-save-spacer{flex:1}
+.retro-savebar{display:flex;align-items:center;gap:8px}
+.btn-danger-outline{border:1px solid #c63c49!important;color:#a92131!important;background:#fff!important}
+@media(max-width:760px){
+ .allplays-head-actions{width:100%}
+ .allplays-head-actions .btn{flex:1}
+ .retro-grid-3{grid-template-columns:1fr 1fr!important}
+ .retro-penalty-row{grid-template-columns:1fr 1fr!important}
+ .retro-penalty-row .retro-pen-type{grid-column:1/-1}
+ .retro-penalty-row .btn{grid-column:1/-1}
+ .retro-savebar{flex-wrap:wrap}
+ .retro-save-spacer{display:none}
+ .retro-savebar .btn{flex:1}
+}
+
+/* v0.50.1 MOBILE ONLY — desktop intentionally unchanged */
+@media (max-width:760px){
+ .game-page{--mf:36%;--mg:6px}
+ .game-page .mobile-field-rail{width:var(--mf)!important;min-width:var(--mf)!important;max-width:var(--mf)!important;order:1!important;align-self:stretch}
+ .game-page .mobile-field-rail .field{width:100%!important;min-width:0!important;height:min(70vh,700px)!important;min-height:525px!important}
+ .game-page .mobile-workflow-rail{width:calc(64% - var(--mg))!important;min-width:0!important;max-width:none!important;order:2!important;overflow:hidden;background:#061f28;border-left:1px solid #245565}
+ .game-page .mobile-workflow-toggle{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:4px;background:#082b36;position:sticky;top:0;z-index:12}
+ .game-page .mobile-workflow-toggle button{min-width:0;padding:8px 2px;border:1px solid #2c6475;border-radius:8px;background:#092a34;color:#d8edf4;font-size:10px;line-height:1.05;font-weight:800}
+ .game-page .mobile-workflow-toggle button.active{background:#1e6bff;color:#fff;border-color:#00d4ff}
+ .game-page .mobile-unified-content{min-width:0;overflow:visible}
+ .game-page[data-mobile-workflow="scrimmage"] [data-mobile-unified="offense"],
+ .game-page[data-mobile-workflow="scrimmage"] [data-mobile-unified="defense"]{display:block!important;width:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:5px!important;border:0!important;background:#eef4f6!important}
+ .game-page[data-mobile-workflow="scrimmage"] [data-mobile-unified="special"]{display:none!important}
+ .game-page[data-mobile-workflow="special"] [data-mobile-unified="offense"],
+ .game-page[data-mobile-workflow="special"] [data-mobile-unified="defense"]{display:none!important}
+ .game-page[data-mobile-workflow="special"] [data-mobile-unified="special"]{display:block!important;width:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:5px!important;border:0!important;background:#eef4f6!important}
+ .game-page .mobile-workflow-rail *{box-sizing:border-box}
+ .game-page .mobile-workflow-rail input,.game-page .mobile-workflow-rail select,.game-page .mobile-workflow-rail textarea{max-width:100%!important;min-width:0!important}
+ .game-page .mobile-workflow-rail .icon-btn,.game-page .mobile-workflow-rail .action-icon-btn{width:48px!important;height:48px!important;min-width:0!important;padding:4px!important}
+ .game-page .mobile-workflow-rail .icon-btn img,.game-page .mobile-workflow-rail .action-icon-btn img{width:32px!important;height:32px!important;object-fit:contain}
+ .game-page [data-mobile-unified="defense"]{border-top:1px solid #c9d8de!important}
+ .game-page [data-mobile-unified="defense"] .defense-actions,
+ .game-page [data-mobile-unified="defense"] .action-grid,
+ .game-page [data-mobile-unified="defense"] .button-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;overflow:visible!important}
+ .game-page [data-mobile-unified="defense"] .defense-actions button,
+ .game-page [data-mobile-unified="defense"] .action-grid button,
+ .game-page [data-mobile-unified="defense"] .button-grid button{min-width:0!important;width:100%!important;padding:4px 1px!important;font-size:9px!important}
+}

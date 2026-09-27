@@ -1,9 +1,9 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.42.7';
-const DBKEY='sidelineiq_v0427';
-const LEGACY_KEYS=['sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
+const BUILD='v0.50.1';
+const DBKEY='sidelineiq_v0501';
+const LEGACY_KEYS=['sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
 let selectedPlayId=null;
 let mobilePaneOpen='off';
@@ -1053,6 +1053,8 @@ function renderGame(id){
  </section>
  <section class="savebar"><button class="btn btn-light note-trigger" id="playNotes">✎ Notes</button><div class="save-actions"><button class="btn btn-primary" id="savePlay">✓ Save Play</button><button class="btn btn-light" id="clearPlay">Clear</button></div></section></main>`);
  document.querySelector('.topbar')?.remove();composeMobileGameLayout();bindGame(g,t);bindMobilePaneCollapse(g);drawField(g,t)
+
+ scheduleMobileWorkflow(g);
 }
 
 function offensePane(g){
@@ -1134,11 +1136,12 @@ function allPlayRows(g,t){
    </div>`
  }).join('')
 }
+
 function showAllPlays(g,t){
  showModal(`<div class="allplays-modal">
    <div class="allplays-head">
      <div><div class="eyebrow">GAME LOG</div><h2>All Plays</h2><p>${esc(t.name)} vs ${esc(g.opponent)} · ${g.plays.length} recorded plays</p></div>
-     <button class="btn btn-light" id="closeAllPlays">Close</button>
+     <div class="allplays-head-actions"><button class="btn btn-primary" id="addMissedPlay">+ Add Missed Play</button><button class="btn btn-light" id="closeAllPlays">Close</button></div>
    </div>
    <div class="allplays-tools">
      <input id="playSearch" placeholder="Search plays, player numbers, tackles..." autocomplete="off">
@@ -1148,6 +1151,7 @@ function showAllPlays(g,t){
    <div class="allplays-list" id="allPlaysList">${allPlayRows(g,t)}</div>
  </div>`);
  $('#closeAllPlays').onclick=closeModal;
+ $('#addMissedPlay').onclick=()=>{closeModal();showPlayEditor(g,t,null,true)};
 
  const apply=()=>{
    const q=($('#playSearch')?.value||'').trim().toLowerCase();
@@ -1165,150 +1169,285 @@ function showAllPlays(g,t){
  $('#playPeriodFilter').onchange=apply;
  $('#playTeamFilter').onchange=apply;
  $$('[data-edit-allplay]').forEach(b=>b.onclick=()=>{
-   const id=b.dataset.editAllplay;
-   closeModal();
-   showPlayEditor(g,t,id)
+   const id=b.dataset.editAllplay;closeModal();showPlayEditor(g,t,id)
  });
- $$('.allplay-row').forEach(row=>row.addEventListener('click',e=>{if(e.target.closest('[data-edit-allplay]'))return;const id=row.dataset.allplay;closeModal();showPlayEditor(g,t,id)}))
+ $$('.allplay-row').forEach(row=>row.addEventListener('click',e=>{if(e.target.closest('[data-edit-allplay]'))return;closeModal();showPlayEditor(g,t,row.dataset.allplay)}))
 }
-function defenderEditorRows(p){
+
+function retroDefenderRows(p){
  const defs=p.defenders||[];
  return defs.length?defs.map((d,i)=>{
    const action=d.action==='Assist'?'Tackle':d.action;
    const credit=Number(d.credit??(d.action==='Assist'?0.5:1));
    return `<div class="retro-defender-row">
-   <input class="retro-def-num" data-def-i="${i}" inputmode="numeric" value="${esc(d.n||'')}" placeholder="#">
-   <select class="retro-def-action" data-def-i="${i}">${['Tackle','Sack','Pressure','Hurry','Missed'].map(a=>`<option ${action===a?'selected':''}>${a}</option>`).join('')}</select>
-   <select class="retro-def-credit" data-def-i="${i}"><option value="1" ${credit===1?'selected':''}>1.0</option><option value="0.5" ${credit===0.5?'selected':''}>0.5</option></select>
-   <button class="btn btn-light retro-remove-def" data-remove-def="${i}">Remove</button>
- </div>`}).join(''):`<div class="retro-empty-defense">No defenders recorded on this play.</div>`
+    <input class="retro-def-num" inputmode="numeric" value="${esc(d.n||'')}" placeholder="#">
+    <select class="retro-def-action">${['Tackle','Sack','PBU','Forced Fumble','Fumble Recovery','Pressure'].map(a=>`<option ${action===a?'selected':''}>${a}</option>`).join('')}</select>
+    <select class="retro-def-credit"><option value="1" ${credit===1?'selected':''}>1.0</option><option value="0.5" ${credit===0.5?'selected':''}>0.5</option></select>
+    <button class="btn btn-light retro-remove-def" type="button">Remove</button>
+   </div>`}).join(''):`<div class="retro-empty-defense">No defenders recorded on this play.</div>`
 }
 
-function offensiveEditFields(p){
- const parsed=parsedPlayPlayers(p);
- if(p.kind==='Run')return `<div class="retro-grid">
-   <div class="retro-field"><label>Ball Carrier #</label><input id="retroPlayer" inputmode="numeric" value="${esc(parsed.player||'')}"></div>
-   <div class="retro-field"><label>Fumble</label><select id="retroFumble"><option value="no" ${!p.fumble?'selected':''}>No</option><option value="Offense" ${p.fumble&&p.fumbleRecovery==='Offense'?'selected':''}>Yes · Recovered by Offense</option><option value="Defense" ${p.fumble&&p.fumbleRecovery==='Defense'?'selected':''}>Yes · Recovered by Defense</option></select></div>
- </div>`;
- if(p.kind==='Pass')return `<div class="retro-grid">
-   <div class="retro-field"><label>QB #</label><input id="retroQB" inputmode="numeric" value="${esc(parsed.qb||'')}"></div>
-   <div class="retro-field"><label>Receiver #</label><input id="retroReceiver" inputmode="numeric" value="${esc(parsed.receiver||'')}"></div>
-   <div class="retro-field"><label>Pass Result</label><select id="retroPassResult">${['Complete','Incomplete','Interception','Sack'].map(x=>`<option ${parsed.result===x?'selected':''}>${x}</option>`).join('')}</select></div>
-   <div class="retro-field"><label>Fumble</label><select id="retroFumble"><option value="no" ${!p.fumble?'selected':''}>No</option><option value="Offense" ${p.fumble&&p.fumbleRecovery==='Offense'?'selected':''}>Yes · Recovered by Offense</option><option value="Defense" ${p.fumble&&p.fumbleRecovery==='Defense'?'selected':''}>Yes · Recovered by Defense</option></select></div>
- </div>`;
- return `<div class="retro-note">This is a ${esc(p.kind||'special teams')} play. You can correct the description, period, statistical yardage, and defensive actions below.</div>`
+function retroPenaltyRows(p){
+ const pens=p.penalties||[];
+ return pens.length?pens.map(x=>`<div class="retro-penalty-row">
+   <select class="retro-pen-side"><option ${x.side==='Offense'?'selected':''}>Offense</option><option ${x.side==='Defense'?'selected':''}>Defense</option></select>
+   <select class="retro-pen-status"><option value="accepted" ${String(x.status).toLowerCase()!=='declined'?'selected':''}>Accepted</option><option value="declined" ${String(x.status).toLowerCase()==='declined'?'selected':''}>Declined</option></select>
+   <input class="retro-pen-type" value="${esc(x.type||'')}" placeholder="Penalty type">
+   <input class="retro-pen-yards" type="number" min="0" value="${Number(x.yards||0)}" placeholder="Yds">
+   <input class="retro-pen-player" inputmode="numeric" value="${esc(x.player||'')}" placeholder="Player #">
+   <button class="btn btn-light retro-remove-pen" type="button">Remove</button>
+ </div>`).join(''):`<div class="retro-empty-penalty">No penalties recorded on this play.</div>`
 }
-function showPlayEditor(g,t,id){
- const p=g.plays.find(x=>x.id===id);
- if(!p){toast('Play not found.');return showAllPlays(g,t)}
- const originalYds=Number.isFinite(p.yds)?p.yds:statYards(p);
+
+function retroTypeFields(p){
+ const kind=p.kind||'Run';
+ const parsed=parsedPlayPlayers(p);
+ const f=p.fumbleDetail||{};
+ const b=p.badSnap||{};
+ const interception=p.interception||{};
+ if(kind==='Run'||kind==='Pass'||kind==='2PT'){
+   return `<div class="retro-subsection">
+    <h4>Offensive Detail</h4>
+    <div class="retro-grid">
+      ${kind==='Run'?`<div class="retro-field"><label>Ball Carrier #</label><input id="retroPlayer" inputmode="numeric" value="${esc(parsed.player||p.player||'')}"></div>`:''}
+      ${kind!=='Run'?`<div class="retro-field"><label>QB #</label><input id="retroQB" inputmode="numeric" value="${esc(parsed.qb||p.qb||'')}"></div>
+      <div class="retro-field"><label>Receiver #</label><input id="retroReceiver" inputmode="numeric" value="${esc(parsed.receiver||p.receiver||'')}"></div>
+      <div class="retro-field"><label>Pass Result</label><select id="retroPassResult">${['Complete','Incomplete','Interception','Sack'].map(x=>`<option ${parsed.result===x?'selected':''}>${x}</option>`).join('')}</select></div>`:''}
+      <div class="retro-field"><label>Out of Bounds</label><select id="retroOOB"><option value="no" ${!p.outOfBounds?'selected':''}>No</option><option value="yes" ${p.outOfBounds?'selected':''}>Yes</option></select></div>
+    </div>
+   </div>
+   <div class="retro-subsection">
+    <h4>Snap</h4>
+    <div class="retro-grid">
+      <div class="retro-field"><label>Bad Snap</label><select id="retroBadSnap"><option value="no" ${!b.active?'selected':''}>No</option><option value="yes" ${b.active?'selected':''}>Yes</option></select></div>
+      <div class="retro-field"><label>Center #</label><input id="retroCenter" inputmode="numeric" value="${esc(b.center||'')}"></div>
+      <div class="retro-field"><label>Snap Caught?</label><select id="retroSnapCaught"><option value="yes" ${!b.notCaught?'selected':''}>Yes</option><option value="no" ${b.notCaught?'selected':''}>No</option></select></div>
+      <div class="retro-field"><label>Bad Snap Recovery</label><select id="retroSnapRecovery"><option value="">—</option><option ${b.recoveredBy==='Offense'?'selected':''}>Offense</option><option ${b.recoveredBy==='Defense'?'selected':''}>Defense</option></select></div>
+    </div>
+   </div>
+   <div class="retro-subsection">
+    <h4>Fumble</h4>
+    <div class="retro-grid">
+      <div class="retro-field"><label>Fumble</label><select id="retroFumble"><option value="no" ${!p.fumble?'selected':''}>No</option><option value="yes" ${p.fumble?'selected':''}>Yes</option></select></div>
+      <div class="retro-field"><label>Recovered By</label><select id="retroFumbleRecovery"><option value="">—</option><option ${p.fumbleRecovery==='Offense'?'selected':''}>Offense</option><option ${p.fumbleRecovery==='Defense'?'selected':''}>Defense</option></select></div>
+      <div class="retro-field"><label>Forced By #</label><input id="retroForcedBy" inputmode="numeric" value="${esc(f.forcedBy||'')}"></div>
+      <div class="retro-field"><label>Recoverer #</label><input id="retroRecoverer" inputmode="numeric" value="${esc(f.recoverer||'')}"></div>
+      <div class="retro-field"><label>Recovery Spot</label><input id="retroRecoverySpot" type="number" min="0" max="100" value="${f.recoverySpot??''}"></div>
+      <div class="retro-field"><label>Return End</label><input id="retroReturnEnd" type="number" min="0" max="100" value="${f.returnEnd??''}"></div>
+      <div class="retro-field"><label>Fumble Return TD</label><select id="retroFumbleTD"><option value="no" ${!f.returnTD?'selected':''}>No</option><option value="yes" ${f.returnTD?'selected':''}>Yes</option></select></div>
+    </div>
+   </div>
+   ${kind!=='Run'?`<div class="retro-subsection"><h4>Interception Detail</h4><div class="retro-grid">
+      <div class="retro-field"><label>Interceptor #</label><input id="retroInterceptor" inputmode="numeric" value="${esc(interception.interceptor||'')}"></div>
+      <div class="retro-field"><label>Catch Spot</label><input id="retroIntCatch" type="number" min="0" max="100" value="${interception.catchSpot??''}"></div>
+      <div class="retro-field"><label>Return End</label><input id="retroIntReturn" type="number" min="0" max="100" value="${interception.returnEnd??''}"></div>
+      <div class="retro-field"><label>INT Return TD</label><select id="retroIntTD"><option value="no" ${!interception.returnTD?'selected':''}>No</option><option value="yes" ${interception.returnTD?'selected':''}>Yes</option></select></div>
+   </div></div>`:''}`;
+ }
+ return `<div class="retro-subsection"><h4>Special Teams Detail</h4><div class="retro-grid">
+   <div class="retro-field"><label>Kicker / Punter #</label><input id="retroKicker" inputmode="numeric" value="${esc(p.kicker||p.punter||'')}"></div>
+   <div class="retro-field"><label>Returner #</label><input id="retroReturner" inputmode="numeric" value="${esc(p.returner||'')}"></div>
+   <div class="retro-field"><label>Result</label><input id="retroSpecialResult" value="${esc(p.specialResult||'')}" placeholder="Return, Touchback, Fair Catch..."></div>
+   <div class="retro-field"><label>Kick Good?</label><select id="retroKickGood"><option value="">—</option><option value="yes" ${p.kickGood===true?'selected':''}>Yes</option><option value="no" ${p.kickGood===false?'selected':''}>No</option></select></div>
+   <div class="retro-field"><label>Blocked?</label><select id="retroBlocked"><option value="no" ${!p.blocked?'selected':''}>No</option><option value="yes" ${p.blocked?'selected':''}>Yes</option></select></div>
+   <div class="retro-field"><label>Blocker #</label><input id="retroBlocker" inputmode="numeric" value="${esc(p.blocker||'')}"></div>
+   <div class="retro-field"><label>Recoverer #</label><input id="retroSpecialRecoverer" inputmode="numeric" value="${esc(p.recoverer||p.kickRecoverer||'')}"></div>
+   <div class="retro-field"><label>Return TD</label><select id="retroReturnTD"><option value="no" ${!p.returnTD?'selected':''}>No</option><option value="yes" ${p.returnTD?'selected':''}>Yes</option></select></div>
+ </div></div>`
+}
+
+function retroAutoDescription(p){
+ const y=Number(p.yds||0),ys=`${y>=0?'+':''}${y} yd`;
+ if(p.kind==='Run')return `Run${p.player?` #${p.player}`:''} ${ys}${p.outOfBounds?' · OOB':''}${p.fumble?' · FUMBLE':''}${p.badSnap?.active?' · BAD SNAP':''}`;
+ if(p.kind==='Pass')return p.passResult==='Sack'?`Sack of QB${p.qb?` #${p.qb}`:''} ${ys}`:`Pass${p.qb?` #${p.qb}`:''}${p.receiver?` → #${p.receiver}`:''} · ${p.passResult||'Complete'} ${ys}${p.outOfBounds?' · OOB':''}${p.fumble?' · FUMBLE':''}${p.badSnap?.active?' · BAD SNAP':''}`;
+ if(p.kind==='2PT')return `2-Point Try · ${p.tryResult||p.passResult||''}`.trim();
+ if(p.kind==='Kickoff')return `Kickoff${p.kicker?` #${p.kicker}`:''} · ${p.specialResult||'Return'} ${ys}`;
+ if(p.kind==='Punt')return `Punt${p.kicker?` #${p.kicker}`:''} · ${p.specialResult||'Return'} ${ys}`;
+ if(p.kind==='Field Goal')return `Field Goal${p.kicker?` #${p.kicker}`:''} · ${p.kickGood===true?'GOOD':p.kickGood===false?'NO GOOD':''}`.trim();
+ if(p.kind==='PAT')return `PAT${p.kicker?` #${p.kicker}`:''} · ${p.kickGood===true?'GOOD':p.kickGood===false?'NO GOOD':''}`.trim();
+ return p.kind||'Play'
+}
+
+function showPlayEditor(g,t,id=null,isNew=false){
+ let p=isNew?null:g.plays.find(x=>x.id===id);
+ if(!isNew&&!p){toast('Play not found.');return showAllPlays(g,t)}
+ if(isNew){
+   const prior=g.plays[g.plays.length-1];
+   const before=prior?structuredClone(prior.before||snapshot(g)):snapshot(g);
+   before.poss=prior?.team||g.poss;before.period=prior?.period||g.period;
+   p={id:uid(),kind:'Run',team:before.poss,period:before.period,start:before.los??g.los,end:before.los??g.los,yds:0,desc:'',before,player:'',qb:'',receiver:'',passResult:'Complete',outOfBounds:false,interception:null,fumble:false,fumbleRecovery:null,fumbleDetail:null,badSnap:{active:false,center:'',notCaught:false,recoveredBy:null},penalties:[],defenders:[]}
+ }
+ p.penalties??=[];p.defenders??=[];p.badSnap??={active:false,center:'',notCaught:false,recoveredBy:null};
+ const originalYds=Number.isFinite(Number(p.yds))?Number(p.yds):statYards(p);
  const period=p.period||p.before?.period||1;
- showModal(`<div class="retro-edit-modal">
+ const insertionOptions=`<option value="end">At end of game log</option>${g.plays.map((x,i)=>`<option value="${i}" ${i===g.plays.length-1?'selected':''}>After Play ${i+1} · ${esc((x.desc||x.kind||'Play').slice(0,42))}</option>`).join('')}`;
+ showModal(`<div class="retro-edit-modal full-play-editor">
    <div class="retro-edit-head">
-     <div><div class="eyebrow">EDIT RECORDED PLAY</div><h2>Play ${g.plays.indexOf(p)+1} · ${esc(p.kind||'Play')}</h2><p>${esc(playTeamName(g,t,p))} · ${playPeriodLabel(g,p)}</p></div>
+     <div><div class="eyebrow">${isNew?'ADD MISSED PLAY':'EDIT RECORDED PLAY'}</div><h2>${isNew?'Manual Play Entry':`Play ${g.plays.indexOf(p)+1}`}</h2><p>${isNew?'Insert a missed play without changing the current live field state.':'Every recorded component of this play can be corrected here.'}</p></div>
      <button class="btn btn-light" id="cancelRetroEdit">Back to All Plays</button>
    </div>
 
    <div class="retro-section">
-     <h3>Play Details</h3>
-     <div class="retro-grid">
-       <div class="retro-field"><label>Period</label><select id="retroPeriod">${Array.from({length:g.format==='halves'?2:4},(_,i)=>`<option value="${i+1}" ${period===i+1?'selected':''}>${g.format==='halves'?'Half':'Quarter'} ${i+1}</option>`).join('')}</select></div>
-       <div class="retro-field"><label>Statistical Yards</label><input id="retroYards" type="number" value="${originalYds}"><small>Changing this updates the stored end spot for statistics; it does not rewind current game state.</small></div>
-     </div>
-     ${offensiveEditFields(p)}
-     <div class="retro-field"><label>Description</label><textarea id="retroDesc" rows="3">${esc(p.desc||'')}</textarea></div>
+    <h3>Play Identity & Field Position</h3>
+    <div class="retro-grid retro-grid-3">
+      <div class="retro-field"><label>Play Type</label><select id="retroKind">${['Run','Pass','2PT','Kickoff','Punt','Field Goal','PAT'].map(x=>`<option ${p.kind===x?'selected':''}>${x}</option>`).join('')}</select></div>
+      <div class="retro-field"><label>Team With Ball / Kicking</label><select id="retroTeam"><option value="team" ${p.team==='team'?'selected':''}>${esc(t.name)}</option><option value="opp" ${p.team==='opp'?'selected':''}>${esc(g.opponent)}</option></select></div>
+      <div class="retro-field"><label>Period</label><select id="retroPeriod">${Array.from({length:g.format==='halves'?2:4},(_,i)=>`<option value="${i+1}" ${period===i+1?'selected':''}>${g.format==='halves'?'Half':'Quarter'} ${i+1}</option>`).join('')}</select></div>
+      <div class="retro-field"><label>Start Spot (0–100)</label><input id="retroStart" type="number" min="0" max="100" value="${clamp(p.start??p.before?.los??g.los)}"><small>0 = left goal line, 100 = right goal line.</small></div>
+      <div class="retro-field"><label>Statistical Yards</label><input id="retroYards" type="number" value="${originalYds}"></div>
+      ${isNew?`<div class="retro-field"><label>Insert Play</label><select id="retroInsertAfter">${insertionOptions}</select></div>`:''}
+    </div>
+    <div id="retroDynamicFields">${retroTypeFields(p)}</div>
+    <div class="retro-field"><label>Description</label><textarea id="retroDesc" rows="3" placeholder="Leave blank to rebuild the description from the fields above.">${esc(p.desc||'')}</textarea></div>
    </div>
 
    <div class="retro-section">
-     <div class="retro-section-head"><div><h3>Defense</h3><p>Add or correct tackles, assists, sacks, pressures, hurries, and missed tackles.</p></div></div>
-     <div id="retroDefenders">${defenderEditorRows(p)}</div>
+     <div class="retro-section-head"><div><h3>Defense</h3><p>Add, remove, or correct defender attribution.</p></div></div>
+     <div id="retroDefenders">${retroDefenderRows(p)}</div>
      <div class="retro-add-defense">
        <input id="retroNewDefender" inputmode="numeric" placeholder="Defender #">
-       <select id="retroNewAction"><option>Tackle</option><option>Sack</option><option>Pressure</option><option>Hurry</option><option>Missed</option></select>
+       <select id="retroNewAction"><option>Tackle</option><option>Sack</option><option>PBU</option><option>Forced Fumble</option><option>Fumble Recovery</option><option>Pressure</option></select>
        <select id="retroNewCredit"><option value="1">1.0</option><option value="0.5">0.5</option></select>
-       <button class="btn btn-light" id="retroAddDefender">+ Add Defender</button>
+       <button class="btn btn-light" id="retroAddDefender" type="button">+ Add Defender</button>
      </div>
    </div>
 
+   <div class="retro-section">
+     <div class="retro-section-head"><div><h3>Penalties</h3><p>Correct penalty side, status, type, yards, and player attribution.</p></div></div>
+     <div id="retroPenalties">${retroPenaltyRows(p)}</div>
+     <button class="btn btn-light" id="retroAddPenalty" type="button">+ Add Penalty</button>
+   </div>
+
    <div class="retro-savebar">
+     ${!isNew?'<button class="btn btn-danger-outline" id="retroDelete">Delete Play</button>':''}
+     <span class="retro-save-spacer"></span>
      <button class="btn btn-light" id="retroBack">Cancel</button>
-     <button class="btn btn-primary" id="retroSave">Save Corrections</button>
+     <button class="btn btn-primary" id="retroSave">${isNew?'Add Play':'Save Corrections'}</button>
    </div>
  </div>`);
 
- const collectDefenders=()=>{
-   const defs=[];
-   $$('.retro-defender-row').forEach(row=>{
-     const n=row.querySelector('.retro-def-num')?.value.trim();
-     let action=row.querySelector('.retro-def-action')?.value;
-     const credit=Number(row.querySelector('.retro-def-credit')?.value||1);
-     if(action==='Assist')action='Tackle';
-     if(n)defs.push({n,action,credit:(action==='Tackle'||action==='Sack')?credit:1})
-   });
-   return defs
- };
- const rerenderDefs=(defs)=>{
-   p.defenders=defs;
-   $('#retroDefenders').innerHTML=defenderEditorRows(p);
-   bindDefRows()
- };
- const bindDefRows=()=>{
-   $$('.retro-remove-def').forEach(b=>b.onclick=()=>{
-     const defs=collectDefenders();
-     defs.splice(Number(b.dataset.removeDef),1);
-     rerenderDefs(defs)
-   })
- };
+ const collectDefenders=()=>$$('.retro-defender-row').map(row=>{
+   const n=row.querySelector('.retro-def-num')?.value.trim();
+   const action=row.querySelector('.retro-def-action')?.value||'Tackle';
+   const credit=Number(row.querySelector('.retro-def-credit')?.value||1);
+   return n?{n,action,credit:(action==='Tackle'||action==='Sack')?credit:1}:null
+ }).filter(Boolean);
+ const bindDefRows=()=>$$('.retro-remove-def').forEach(b=>b.onclick=()=>{b.closest('.retro-defender-row')?.remove();if(!$$('.retro-defender-row').length)$('#retroDefenders').innerHTML='<div class="retro-empty-defense">No defenders recorded on this play.</div>'});
  bindDefRows();
-
  $('#retroAddDefender').onclick=()=>{
-   const n=$('#retroNewDefender').value.trim();
-   if(!n)return toast('Enter a defender number.');
-   const defs=collectDefenders();
-   defs.push({n,action:$('#retroNewAction').value,credit:Number($('#retroNewCredit')?.value||1)});
-   $('#retroNewDefender').value='';
-   rerenderDefs(defs)
+   const n=$('#retroNewDefender').value.trim();if(!n)return toast('Enter a defender number.');
+   const holder=$('#retroDefenders');holder.querySelector('.retro-empty-defense')?.remove();
+   const temp={defenders:[{n,action:$('#retroNewAction').value,credit:Number($('#retroNewCredit').value||1)}]};
+   holder.insertAdjacentHTML('beforeend',retroDefenderRows(temp));$('#retroNewDefender').value='';bindDefRows()
  };
+
+ const collectPenalties=()=>$$('.retro-penalty-row').map(row=>{
+   const side=row.querySelector('.retro-pen-side').value,status=row.querySelector('.retro-pen-status').value;
+   return {side,status,type:row.querySelector('.retro-pen-type').value.trim()||'Penalty',yards:Number(row.querySelector('.retro-pen-yards').value||0),player:row.querySelector('.retro-pen-player').value.trim(),spotFoul:false,foulSpot:null,negate:false,repeatDown:false,autoFirst:false,penalizedTeam:side==='Defense'?other($('#retroTeam').value):$('#retroTeam').value}
+ });
+ const bindPenRows=()=>$$('.retro-remove-pen').forEach(b=>b.onclick=()=>{b.closest('.retro-penalty-row')?.remove();if(!$$('.retro-penalty-row').length)$('#retroPenalties').innerHTML='<div class="retro-empty-penalty">No penalties recorded on this play.</div>'});
+ bindPenRows();
+ $('#retroAddPenalty').onclick=()=>{
+   const holder=$('#retroPenalties');holder.querySelector('.retro-empty-penalty')?.remove();
+   holder.insertAdjacentHTML('beforeend',retroPenaltyRows({penalties:[{side:'Offense',status:'accepted',type:'Holding',yards:10,player:''}]}));bindPenRows()
+ };
+
+ const readDynamic=()=>{
+   p.kind=$('#retroKind').value;p.team=$('#retroTeam').value;p.period=Number($('#retroPeriod').value)||1;
+   p.start=clamp($('#retroStart').value);p.yds=Number($('#retroYards').value)||0;
+   const dir=p.before?.driveDir??1;p.end=clamp(p.start+p.yds*dir);
+   p.outOfBounds=$('#retroOOB')?.value==='yes';
+   if(p.kind==='Run')p.player=$('#retroPlayer')?.value.trim()||'';
+   if(p.kind==='Pass'||p.kind==='2PT'){
+     p.qb=$('#retroQB')?.value.trim()||'';p.receiver=$('#retroReceiver')?.value.trim()||'';p.passResult=$('#retroPassResult')?.value||'Complete';
+     if(p.passResult==='Interception'){
+       p.interception={phase:'done',interceptor:$('#retroInterceptor')?.value.trim()||'',catchSpot:$('#retroIntCatch')?.value===''?p.end:clamp($('#retroIntCatch').value),returnEnd:$('#retroIntReturn')?.value===''?p.end:clamp($('#retroIntReturn').value),returnTD:$('#retroIntTD')?.value==='yes',tacklers:[]}
+     }else p.interception=null;
+   }else{p.qb='';p.receiver='';p.passResult=p.kind==='Run'?'':p.passResult}
+   if(['Run','Pass','2PT'].includes(p.kind)){
+     const bad=$('#retroBadSnap')?.value==='yes';
+     p.badSnap={active:bad,center:bad?($('#retroCenter')?.value.trim()||''):'',notCaught:bad&&$('#retroSnapCaught')?.value==='no',recoveredBy:bad&&$('#retroSnapCaught')?.value==='no'?($('#retroSnapRecovery')?.value||null):null};
+     p.fumble=$('#retroFumble')?.value==='yes';
+     p.fumbleRecovery=p.fumble?($('#retroFumbleRecovery')?.value||null):null;
+     p.fumbleDetail=p.fumble?{forcedBy:$('#retroForcedBy')?.value.trim()||'',recoveryTeam:p.fumbleRecovery||'Offense',recoverer:$('#retroRecoverer')?.value.trim()||'',recoverySpot:$('#retroRecoverySpot')?.value===''?p.end:clamp($('#retroRecoverySpot').value),returnEnd:$('#retroReturnEnd')?.value===''?null:clamp($('#retroReturnEnd').value),returnTD:$('#retroFumbleTD')?.value==='yes'}:null;
+   }else{
+     p.kicker=$('#retroKicker')?.value.trim()||'';p.returner=$('#retroReturner')?.value.trim()||'';p.specialResult=$('#retroSpecialResult')?.value.trim()||'';
+     const kg=$('#retroKickGood')?.value;p.kickGood=kg===''?null:kg==='yes';p.blocked=$('#retroBlocked')?.value==='yes';p.blocker=$('#retroBlocker')?.value.trim()||'';p.recoverer=$('#retroSpecialRecoverer')?.value.trim()||'';p.returnTD=$('#retroReturnTD')?.value==='yes';
+     p.badSnap={active:false,center:'',notCaught:false,recoveredBy:null};p.fumble=false;p.fumbleRecovery=null;p.fumbleDetail=null;p.interception=null;
+   }
+   p.defenders=collectDefenders();p.penalties=collectPenalties();
+   p.before??=snapshot(g);p.before.poss=p.team;p.before.period=p.period;p.before.los=p.start;
+   const typed=$('#retroDesc').value.trim();p.desc=typed||retroAutoDescription(p)
+ };
+
+ const rerenderDynamic=()=>{
+   // Preserve common identity fields before changing type.
+   p.kind=$('#retroKind').value;p.team=$('#retroTeam').value;p.period=Number($('#retroPeriod').value)||p.period;
+   $('#retroDynamicFields').innerHTML=retroTypeFields(p)
+ };
+ $('#retroKind').onchange=rerenderDynamic;
 
  const back=()=>{closeModal();showAllPlays(g,t)};
- $('#cancelRetroEdit').onclick=back;
- $('#retroBack').onclick=back;
+ $('#cancelRetroEdit').onclick=back;$('#retroBack').onclick=back;
+
+ if($('#retroDelete'))$('#retroDelete').onclick=()=>{
+   const num=g.plays.indexOf(p)+1;
+   if(!confirm(`Delete Play ${num}?\n\nThis removes the play from the game log and analytics. The current live field position and score will not be rewound.`))return;
+   g.plays=g.plays.filter(x=>x.id!==p.id);save();closeModal();toast(`Play ${num} deleted.`);renderGame(g.id);showAllPlays(g,t)
+ };
 
  $('#retroSave').onclick=()=>{
-   p.period=Number($('#retroPeriod').value)||period;
-   const y=Number($('#retroYards').value);
-   if(Number.isFinite(y)){
-     const dir=p.before?.driveDir??1;
-     const start=Number.isFinite(p.start)?p.start:(p.before?.los??0);
-     p.start=start;
-     p.end=clamp(start+y*dir);
-     p.yds=y;
-   }
-
-   if(p.kind==='Run'){
-     p.player=$('#retroPlayer')?.value.trim()||'';
-   }
-   if(p.kind==='Pass'){
-     p.qb=$('#retroQB')?.value.trim()||'';
-     p.receiver=$('#retroReceiver')?.value.trim()||'';
-     p.passResult=$('#retroPassResult')?.value||p.passResult||'Complete';
-   }
-   if($('#retroFumble')){
-     const f=$('#retroFumble').value;
-     p.fumble=f!=='no';
-     p.fumbleRecovery=f==='no'?null:f;
-   }
-
-   p.defenders=collectDefenders();
-   p.desc=$('#retroDesc').value.trim()||p.desc;
-
-   save();
-   closeModal();
-   toast('Play corrections saved.');
-   renderGame(g.id);
-   showAllPlays(g,t)
+   readDynamic();
+   if(isNew){
+     const where=$('#retroInsertAfter').value;
+     if(where==='end')g.plays.push(p);else g.plays.splice(Number(where)+1,0,p);
+     toast('Missed play added to the game log.');
+   }else toast('Play corrections saved.');
+   save();closeModal();renderGame(g.id);showAllPlays(g,t)
  }
 }
+
+/* v0.50.1 — mobile-only unified workflow */
+function mobileWorkflowMode(g){return g.mobileWorkflowMode||(g.kickoff||g.punt?'special':'scrimmage')}
+function setMobileWorkflowMode(g,mode){g.mobileWorkflowMode=mode==='special'?'special':'scrimmage';save();applyMobileWorkflow(g)}
+function applyMobileWorkflow(g){
+ const root=document.querySelector('.game-page');if(!root)return;
+ root.dataset.mobileWorkflow=mobileWorkflowMode(g);
+ $('#mobileScrimmageToggle')?.classList.toggle('active',mobileWorkflowMode(g)==='scrimmage');
+ $('#mobileSpecialToggle')?.classList.toggle('active',mobileWorkflowMode(g)==='special');
+}
+function ensureMobileWorkflowShell(g){
+ if(!window.matchMedia('(max-width:760px)').matches)return;
+ const root=document.querySelector('.game-page');if(!root||$('#mobileWorkflowToggle'))return;
+ const field=root.querySelector('.field');if(!field)return;
+ const fieldCol=field.closest('.field-wrap,.field-column,.game-field-wrap')||field.parentElement;
+ if(!fieldCol?.parentElement)return;
+ fieldCol.classList.add('mobile-field-rail');
+
+ const findPane=(word)=>{
+   const els=[...root.querySelectorAll('section,div')];
+   return els.find(el=>{
+     if(el===fieldCol||el.contains(field))return false;
+     const h=el.querySelector(':scope > h2,:scope > h3,:scope > .pane-title,:scope > .section-title,:scope > button:first-child');
+     return h&&((h.textContent||'').trim().toLowerCase().startsWith(word));
+   })||null
+ };
+ const off=findPane('offense'),def=findPane('defense'),st=findPane('special teams');
+ if(off)off.dataset.mobileUnified='offense';
+ if(def)def.dataset.mobileUnified='defense';
+ if(st)st.dataset.mobileUnified='special';
+
+ const rail=document.createElement('div');
+ rail.className='mobile-workflow-rail';rail.id='mobileWorkflowRail';
+ rail.innerHTML=`<div class="mobile-workflow-toggle" id="mobileWorkflowToggle"><button id="mobileScrimmageToggle" type="button">Scrimmage</button><button id="mobileSpecialToggle" type="button">Special Teams</button></div><div class="mobile-unified-content" id="mobileUnifiedContent"></div>`;
+ fieldCol.parentElement.insertBefore(rail,fieldCol.nextSibling);
+ const content=$('#mobileUnifiedContent');
+ [off,def,st].filter(Boolean).forEach(x=>content.appendChild(x));
+ $('#mobileScrimmageToggle').onclick=()=>setMobileWorkflowMode(g,'scrimmage');
+ $('#mobileSpecialToggle').onclick=()=>setMobileWorkflowMode(g,'special');
+ applyMobileWorkflow(g)
+}
+function scheduleMobileWorkflow(g){if(window.matchMedia('(max-width:760px)').matches)requestAnimationFrame(()=>requestAnimationFrame(()=>ensureMobileWorkflowShell(g)))}
 
 function resetGameState(g){
  const openingKick=g.openingKick||'team';
