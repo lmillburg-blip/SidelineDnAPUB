@@ -1,14 +1,14 @@
-SIDELINEIQ v0.50.7
+SIDELINEIQ v0.50.8 HOTFIX
 
-MOBILE WORKFLOW POLISH
-- Football marker keeps the larger touch target but is football-shaped again.
-- Completing a kickoff or punt automatically returns the mobile workflow to Scrimmage.
-- Live tackle/sack credit is automatic:
-    one tackler/sacker = 1.0
-    multiple tacklers/sackers = 0.5 each
-  The 1.0 / 0.5 selection buttons are removed from live entry.
-- Mobile Penalty is now a popup instead of a collapsible workflow pane.
-- Numeric player keypad behavior from v0.50.6 is retained.
-- Desktop workflow/layout is preserved.
+Fixes the mobile game-screen crash introduced by the v0.50.7 penalty-popup conversion.
 
-Upload all files/folders from this ZIP to the repository root.
+Root cause:
+The penalty pane was intentionally removed from the mobile main DOM, but bindPenalty()
+was still called during normal game rendering and attempted to attach onchange handlers
+to penalty fields that only exist after the popup opens.
+
+Fix:
+Penalty event binding now safely checks for popup fields before attaching handlers.
+The popup still binds normally after it opens.
+
+All v0.50.7 workflow changes are retained.
