@@ -2579,3 +2579,90 @@ body:has(.game-page){
 /* v0.51.5 — richer team identity */
 .setup-identity-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}.setup-identity-grid .setup-span-2{grid-column:1/-1}.team-logo-upload{display:grid;grid-template-columns:104px 1fr;gap:16px;align-items:center;padding:12px;border:1px solid rgba(100,116,139,.25);border-radius:16px;background:rgba(234,247,255,.45)}.team-logo-preview{width:96px;height:96px;border-radius:18px;background:#082b35;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(0,212,255,.28);color:#64748b;font-size:12px}.team-logo-preview-img{width:100%;height:100%;object-fit:contain;padding:7px}.team-logo-upload input[type=file]{width:100%;font-size:13px}.team-logo-upload small{display:block;margin-top:7px;color:#64748b}.team-logo-remove{margin-top:9px}.team-list-logo,.team-banner-logo{object-fit:contain;background:#082b35;border:1px solid rgba(0,212,255,.24)}.team-list-logo{width:48px;height:48px;border-radius:13px;padding:4px;flex:0 0 auto}.team-banner-logo{width:72px;height:72px;border-radius:18px;padding:6px}.score-team-logo{width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:7px;border-radius:7px;background:rgba(0,0,0,.16);padding:2px}
 @media(max-width:760px){.setup-identity-grid{grid-template-columns:1fr;gap:10px}.setup-identity-grid .setup-span-2{grid-column:auto}.team-logo-upload{grid-template-columns:82px 1fr;gap:10px}.team-logo-preview{width:76px;height:76px}.team-banner-logo{width:52px;height:52px;border-radius:14px}.score-team-logo{width:22px;height:22px;margin-right:4px}.setup-team-modal .setup-body{padding-bottom:100px}}
+
+/* ============================================================
+   v0.51.6 — iPhone fixed live-game shell + safe-area polish
+   Desktop intentionally untouched.
+   ============================================================ */
+@media (max-width:900px){
+  /* Keep the live UI below the Dynamic Island / status bar. */
+  body.mobile-game-active{
+    box-sizing:border-box!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+    overflow:hidden!important;
+    padding-top:max(env(safe-area-inset-top),10px)!important;
+    padding-bottom:max(env(safe-area-inset-bottom),4px)!important;
+  }
+  body.mobile-game-active .app-shell{
+    height:100%!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  body.mobile-game-active .app-version-footer{display:none!important}
+
+  /* Fixed shell: header + field never scroll. The workflow is the sole scroller. */
+  .mobile-game-active .game-page{
+    box-sizing:border-box!important;
+    height:100%!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+    padding:4px!important;
+  }
+  .mobile-game-active .game-top{
+    position:relative!important;
+    top:auto!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    z-index:60!important;
+  }
+  .game-page .mobile-score-workspace.mobile-v0504-workspace{
+    flex:1 1 auto!important;
+    height:auto!important;
+    max-height:none!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    align-items:stretch!important;
+  }
+  .game-page .mobile-v0504-field-rail{
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  .game-page .mobile-v0504-field-rail .mobile-field-save{
+    flex:0 0 42px!important;
+  }
+  .game-page .mobile-v0504-field-rail .field-panel{
+    flex:1 1 auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:hidden!important;
+  }
+  .game-page .mobile-v0504-field-rail .field{
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  .game-page .mobile-v0504-workflow-rail{
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    touch-action:pan-y!important;
+    padding-bottom:max(16px,env(safe-area-inset-bottom))!important;
+  }
+  .game-page .mobile-v0504-toggle{
+    position:sticky!important;
+    top:0!important;
+    z-index:20!important;
+  }
+}
