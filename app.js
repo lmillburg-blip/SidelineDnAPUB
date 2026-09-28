@@ -1,7 +1,7 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.51.7';
+const BUILD='v0.51.8';
 const DBKEY='sidelineiq_v0516';
 const LEGACY_KEYS=['sidelineiq_v0515','sidelineiq_v0514','sidelineiq_v0510','sidelineiq_v0513','sidelineiq_v0509','sidelineiq_v0508','sidelineiq_v0507','sidelineiq_v0506','sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
@@ -625,7 +625,7 @@ function showGameValidation(g,t,onFinalize){
 function uiIcon(name){
  const mockupIcons=new Set(['pass','badsnap','fumble','normal','td','tackle','sack','pbu','pressure','oob']);
  const ext=mockupIcons.has(name)?'png':'svg';
- return `<img class="play-action-icon" src="./icons/actions/${name}.${ext}?v=0517" alt="" aria-hidden="true">`;
+ return `<img class="play-action-icon" src="./icons/actions/${name}.${ext}?v=0518" alt="" aria-hidden="true">`;
 }
 function iconButton(icon,label,attrs='',extra=''){
  return `<button ${attrs} class="icon-action-btn ${extra}" aria-label="${esc(label)}" title="${esc(label)}">${uiIcon(icon)}<span class="action-text">${esc(label)}</span></button>`;
@@ -1771,6 +1771,27 @@ function composeMobileGameLayout(g,t){
  important(root,'align-items','start');
  important(root,'width','100%');
  important(root,'min-width','0');
+
+ // v0.51.8: iOS Safari/PWA can resolve percentage/flex heights differently when
+ // the safe area and dynamic browser chrome change. Measure the actual remaining
+ // viewport instead of relying on a height:0 flex-basis trick.
+ const sizeMobileWorkspace=()=>{
+   if(!root.isConnected||!isMobileGameLayout())return;
+   const vv=window.visualViewport;
+   const viewportBottom=(vv?vv.offsetTop+vv.height:window.innerHeight);
+   const topY=root.getBoundingClientRect().top;
+   const safeBottom=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sat-bottom'))||0;
+   const available=Math.max(260,Math.floor(viewportBottom-topY-Math.max(safeBottom,4)));
+   important(root,'height',available+'px');
+   important(root,'max-height',available+'px');
+   important(root,'min-height','0');
+ };
+ requestAnimationFrame(()=>{sizeMobileWorkspace();requestAnimationFrame(sizeMobileWorkspace)});
+ window.__siqMobileWorkspaceResize&&window.removeEventListener('resize',window.__siqMobileWorkspaceResize);
+ if(window.visualViewport&&window.__siqMobileWorkspaceResize)window.visualViewport.removeEventListener('resize',window.__siqMobileWorkspaceResize);
+ window.__siqMobileWorkspaceResize=sizeMobileWorkspace;
+ window.addEventListener('resize',sizeMobileWorkspace,{passive:true});
+ if(window.visualViewport)window.visualViewport.addEventListener('resize',sizeMobileWorkspace,{passive:true});
 
  important(fieldRail,'display','grid');
  important(fieldRail,'grid-template-columns','minmax(0,1fr)');

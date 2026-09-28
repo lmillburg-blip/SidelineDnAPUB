@@ -2668,18 +2668,20 @@ body:has(.game-page){
 }
 
 
+
 /* ============================================================
-   v0.51.7 — true fixed mobile rails
+   v0.51.8 — fixed mobile viewport workspace
+   The JS compositor assigns the exact remaining viewport height.
+   Only the right workflow rail scrolls; the field rail stays fixed.
    Desktop intentionally untouched.
-   The workspace owns the remaining viewport height; only the
-   right workflow rail is allowed to scroll.
    ============================================================ */
 @media (max-width:900px){
-  body.mobile-game-active,
+  body.mobile-game-active{
+    overflow:hidden!important;
+    overscroll-behavior:none!important;
+  }
   body.mobile-game-active .app-shell,
   .mobile-game-active .game-page{
-    width:100%!important;
-    max-width:100%!important;
     min-height:0!important;
     overflow:hidden!important;
   }
@@ -2690,61 +2692,64 @@ body:has(.game-page){
   .mobile-game-active .game-top{
     flex:0 0 auto!important;
     position:relative!important;
-    inset:auto!important;
+    top:auto!important;
   }
   .game-page .mobile-score-workspace.mobile-v0504-workspace{
-    flex:1 1 0!important;
-    height:0!important;
+    flex:0 0 auto!important;
     min-height:0!important;
-    max-height:none!important;
     display:grid!important;
     grid-template-columns:minmax(118px,38%) minmax(0,62%)!important;
     grid-template-rows:minmax(0,1fr)!important;
     align-items:stretch!important;
     overflow:hidden!important;
-    contain:layout!important;
   }
   .game-page .mobile-v0504-field-rail,
   .game-page .mobile-v0504-workflow-rail{
     grid-row:1!important;
-    align-self:stretch!important;
-    height:auto!important;
+    height:100%!important;
     min-height:0!important;
     max-height:100%!important;
     margin:0!important;
     transform:none!important;
   }
   .game-page .mobile-v0504-field-rail{
+    display:flex!important;
+    flex-direction:column!important;
     overflow:hidden!important;
-    position:relative!important;
+  }
+  .game-page .mobile-v0504-field-rail .mobile-field-save{
+    flex:0 0 42px!important;
   }
   .game-page .mobile-v0504-field-rail .field-panel{
-    flex:1 1 0!important;
-    height:0!important;
+    flex:1 1 auto!important;
+    height:auto!important;
     min-height:0!important;
+    max-height:none!important;
     overflow:hidden!important;
   }
   .game-page .mobile-v0504-field-rail .field{
     height:100%!important;
     min-height:0!important;
-    max-height:100%!important;
+    max-height:none!important;
   }
   .game-page .mobile-v0504-workflow-rail{
-    overflow-y:scroll!important;
+    display:block!important;
+    overflow-y:auto!important;
     overflow-x:hidden!important;
     -webkit-overflow-scrolling:touch!important;
     overscroll-behavior-y:contain!important;
     touch-action:pan-y!important;
-    position:relative!important;
-    contain:layout paint!important;
     padding-bottom:max(28px,env(safe-area-inset-bottom))!important;
   }
   .game-page .mobile-v0504-workflow-rail .mobile-v0504-mode{
-    min-height:max-content!important;
+    height:auto!important;
+    min-height:0!important;
     overflow:visible!important;
   }
   .game-page .mobile-v0504-workflow-rail .pane,
   .game-page .mobile-v0504-workflow-rail .pane-body{
+    height:auto!important;
+    max-height:none!important;
     overflow:visible!important;
   }
   .game-page .mobile-v0504-toggle{
