@@ -2359,3 +2359,159 @@ body.modal-open{overflow:hidden!important;touch-action:none}
  .defense-confirm-modal .defense-icon-grid button{min-width:0!important;width:100%!important;min-height:66px!important}
  .defense-confirm-modal .modal-actions{position:sticky;bottom:0;background:#fff;padding-top:10px}
 }
+
+/* ==========================================================
+   v0.51.2 PREMIUM SPORTS UI — visual layer only
+   Keeps v0.51.1 workflow/geometry intact.
+   ========================================================== */
+:root{
+  --premium-bg:#03151d;
+  --premium-panel:#082633;
+  --premium-panel-2:#0b3140;
+  --premium-line:rgba(83,203,238,.30);
+  --premium-cyan:#20d7ff;
+  --premium-blue:#1778ff;
+  --premium-purple:#7c2ee8;
+  --premium-text:#f4fbff;
+  --premium-muted:#9bb5c1;
+  --premium-red:#dc3347;
+  --premium-shadow:0 14px 34px rgba(0,0,0,.28);
+}
+body:has(.game-page){
+  background:
+    radial-gradient(900px 420px at 50% -120px,rgba(0,212,255,.14),transparent 70%),
+    linear-gradient(180deg,#03151d 0%,#04202a 48%,#031820 100%);
+}
+.game-page{color:var(--premium-text)}
+.game-top{background:transparent!important}
+.score-card{
+  border:1px solid rgba(255,255,255,.22)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.17),0 8px 22px rgba(0,0,0,.22)!important;
+  border-radius:14px!important;
+}
+.score-card:after{background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 45%,rgba(255,255,255,.04))!important}
+.game-state{
+  background:linear-gradient(180deg,rgba(13,55,69,.96),rgba(5,29,39,.96))!important;
+  border-color:rgba(95,198,229,.36)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.20)!important;
+  border-radius:13px!important;
+}
+.nav-strip{
+  background:linear-gradient(180deg,rgba(8,42,54,.92),rgba(5,30,40,.92))!important;
+  border:1px solid rgba(73,179,211,.28)!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.18)!important;
+}
+.nav-button{background:transparent!important;border-color:rgba(76,174,202,.20)!important;color:#eefaff!important}
+.nav-button:hover,.nav-button:focus-visible{background:rgba(24,189,235,.10)!important;color:#fff!important}
+.nav-button .ico{color:var(--premium-cyan)!important;text-shadow:0 0 12px rgba(32,215,255,.32)}
+
+.field-panel{
+  background:linear-gradient(180deg,rgba(9,46,59,.96),rgba(5,32,42,.98))!important;
+  border:1px solid rgba(87,199,230,.32)!important;
+  box-shadow:var(--premium-shadow),inset 0 1px 0 rgba(255,255,255,.08)!important;
+  border-radius:14px!important;
+}
+.field{box-shadow:inset 0 0 28px rgba(0,0,0,.22)!important}
+.football{filter:drop-shadow(0 4px 5px rgba(0,0,0,.55))}
+
+.pane{background:rgba(238,246,249,.985)!important;border-color:rgba(93,141,158,.24)!important}
+.pane-title{letter-spacing:.3px!important;text-align:left!important;padding-left:14px!important}
+.pane.off .pane-title{background:linear-gradient(100deg,#6421c7,#7b2ce3)!important}
+.pane.def .pane-title{background:linear-gradient(100deg,#9d7200,#c2910b)!important}
+.pane.st .pane-title{background:linear-gradient(100deg,#0767d7,#1385f4)!important}
+.pane.pen .pane-title{background:linear-gradient(100deg,#c52e3e,#df3a4b)!important}
+.pane-body{background:linear-gradient(180deg,#f7fbfc,#eef5f7)!important}
+.section-label{color:#647d88!important;letter-spacing:1.05px!important}
+.form-row input,.form-row select,.pane input,.pane select,.pane textarea{
+  border-color:#b9cbd2!important;
+  box-shadow:inset 0 1px 2px rgba(10,39,50,.05)!important;
+}
+.summary,.notice{border-color:#c5d9e0!important;box-shadow:0 3px 9px rgba(14,48,59,.04)!important}
+
+/* Action icons: less "button box", more instrument control. */
+.icon-action,.action-icon-btn,.offense-icon-button,.defense-icon-button{
+  border-radius:13px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 5px 12px rgba(4,26,34,.12)!important;
+  transition:transform .12s ease,box-shadow .12s ease,filter .12s ease!important;
+}
+.icon-action:hover,.action-icon-btn:hover,.offense-icon-button:hover,.defense-icon-button:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.icon-action.active,.action-icon-btn.active,.offense-icon-button.active,.defense-icon-button.active{
+  box-shadow:0 0 0 2px rgba(32,215,255,.8),0 0 18px rgba(32,215,255,.28),inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+
+/* Modals float above the game rather than feeling like another page. */
+.modal-wrap{background:rgba(0,12,18,.70)!important;backdrop-filter:blur(14px) saturate(120%)!important;-webkit-backdrop-filter:blur(14px) saturate(120%)!important}
+.modal{border-color:rgba(83,203,238,.34)!important;border-radius:20px!important;box-shadow:0 28px 70px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.08)!important}
+.analytics-modal-head{border-radius:15px!important}
+
+/* Mobile premium treatment. Geometry is deliberately untouched. */
+@media(max-width:900px){
+  body:has(.game-page){background:linear-gradient(180deg,#03151d,#04232d 60%,#031820)!important}
+  .mobile-game-active .game-top{background:transparent!important}
+  .mobile-game-active .score-card{border-radius:12px!important}
+  .mobile-game-active .game-state{border-radius:11px!important}
+  .mobile-game-active .mobile-status-strip{
+    background:rgba(8,38,49,.82)!important;
+    border:1px solid rgba(71,177,207,.26)!important;
+    border-radius:12px!important;
+    box-shadow:0 6px 16px rgba(0,0,0,.18)!important;
+  }
+  .mobile-game-active .mobile-status-strip .mini{
+    background:linear-gradient(180deg,#f8fcfd,#eaf2f5)!important;
+    border-color:#c7d7dc!important;
+    border-radius:10px!important;
+  }
+  .mobile-score-workspace{
+    gap:8px!important;
+    background:transparent!important;
+  }
+  .mobile-v0504-field-rail,.mobile-v0504-workflow-rail{min-width:0!important}
+  .mobile-field-save{
+    border:1px solid rgba(99,225,255,.76)!important;
+    border-radius:15px!important;
+    background:linear-gradient(180deg,#168cff,#0b61ee)!important;
+    color:#fff!important;
+    box-shadow:0 8px 20px rgba(0,113,255,.27),inset 0 1px 0 rgba(255,255,255,.30)!important;
+    text-shadow:0 1px 2px rgba(0,0,0,.18)!important;
+  }
+  .mobile-v0504-toggle{
+    padding:4px!important;
+    border-radius:15px!important;
+    border:1px solid rgba(76,179,210,.34)!important;
+    background:rgba(5,31,41,.86)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+  }
+  .mobile-v0504-toggle button{
+    border:0!important;border-radius:11px!important;background:transparent!important;color:#c3d8e0!important;box-shadow:none!important;
+  }
+  .mobile-v0504-toggle button.active{
+    background:linear-gradient(180deg,#247cff,#0d64ef)!important;color:#fff!important;
+    box-shadow:0 4px 12px rgba(0,104,255,.25),inset 0 1px 0 rgba(255,255,255,.25)!important;
+  }
+  .mobile-v0504-workflow-rail .pane{
+    border:1px solid rgba(103,154,171,.28)!important;
+    border-radius:14px!important;
+    overflow:hidden!important;
+    box-shadow:0 10px 25px rgba(0,0,0,.17)!important;
+  }
+  .mobile-v0504-workflow-rail .pane + .pane{border-top:0!important;border-radius:0 0 14px 14px!important;margin-top:-12px!important;padding-top:12px!important}
+  .mobile-v0504-workflow-rail .pane-title{min-height:38px!important;display:flex!important;align-items:center!important}
+  .mobile-v0504-workflow-rail .pane-body{padding:10px!important}
+  .mobile-v0504-workflow-rail input,.mobile-v0504-workflow-rail select{
+    border-radius:10px!important;background:#fff!important;border:1px solid #b9ccd3!important;min-height:38px!important;
+  }
+  .mobile-v0504-workflow-rail .summary{border-radius:10px!important;background:#fff!important}
+  .mobile-penalty-popup-trigger{
+    border-radius:14px!important;
+    background:linear-gradient(180deg,#e33a4c,#bf2638)!important;
+    box-shadow:0 8px 20px rgba(169,22,43,.20),inset 0 1px 0 rgba(255,255,255,.22)!important;
+  }
+  .game-page .football{
+    background:linear-gradient(135deg,#9c5627 0%,#6f3519 100%)!important;
+    border:2px solid #f6ead6!important;
+    box-shadow:0 5px 11px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.28)!important;
+  }
+  .app-version-footer{opacity:.42!important;letter-spacing:2px!important}
+}
