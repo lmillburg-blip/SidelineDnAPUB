@@ -1,8 +1,5 @@
-SIDELINEIQ v0.51.0
-- Prevents iOS form focus zoom by keeping mobile form controls at 16px.
-- Restores scroll position after numeric keyboard dismissal; Enter also dismisses the field.
-- Mobile Save Play now reminds for defensive stats when none have been entered.
-- Defensive reminder has Skip & Save and Save Play.
-- Existing defensive stats bypass the reminder.
-- Sack/interception workflows are not redundantly prompted.
-- v0.50.9 penalty defaults retained.
+SIDELINEIQ v0.51.5 — Team Identity
+
+Adds city, state, competition level, school affiliation, head coach, and locally stored team logo. Team logos are used in team lists, team pages, and game scoreboards. Existing v0.51.4 data migrates automatically.
+
+Upload all files/folders in this ZIP to the GitHub repository root.

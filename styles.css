@@ -2515,3 +2515,67 @@ body:has(.game-page){
   }
   .app-version-footer{opacity:.42!important;letter-spacing:2px!important}
 }
+
+/* ============================================================
+   v0.51.3 MOBILE WORKFLOW POLISH
+   ============================================================ */
+@media(max-width:900px){
+  /* True switch: one control, two modes. */
+  .game-page .mobile-v0504-toggle.mobile-mode-switch{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 48px minmax(0,1fr)!important;
+    align-items:center!important;
+    gap:6px!important;
+    min-height:40px!important;
+    padding:5px 8px!important;
+  }
+  .mobile-mode-switch .mode-label{
+    color:#d8e8ee!important;font-size:9px!important;font-weight:900!important;
+    line-height:1.05!important;letter-spacing:.1px!important;white-space:normal!important;
+  }
+  .mobile-mode-switch .scrimmage-label{text-align:right!important;color:#fff!important}
+  .mobile-mode-switch.special-active .scrimmage-label{color:#8faab4!important}
+  .mobile-mode-switch .special-label{text-align:left!important;color:#8faab4!important}
+  .mobile-mode-switch.special-active .special-label{color:#fff!important}
+  .mode-switch-control{display:block!important;width:48px!important;height:26px!important;position:relative!important;margin:0!important}
+  .mode-switch-control input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important}
+  .mode-switch-track{display:block!important;width:48px!important;height:26px!important;padding:3px!important;border-radius:999px!important;background:#173d49!important;border:1px solid rgba(72,183,215,.5)!important;box-shadow:inset 0 2px 5px rgba(0,0,0,.28)!important}
+  .mode-switch-thumb{display:block!important;width:18px!important;height:18px!important;border-radius:50%!important;background:linear-gradient(180deg,#53e4ff,#1597ff)!important;box-shadow:0 2px 7px rgba(0,0,0,.42)!important;transform:translateX(0)!important;transition:transform .18s ease!important}
+  .mode-switch-control input:checked + .mode-switch-track .mode-switch-thumb{transform:translateX(22px)!important}
+
+  /* The scoreboard/nav, Save Play and field are the fixed game controls.
+     Only the contextual workflow rail scrolls. */
+  body.mobile-game-active{overflow:hidden!important;height:100dvh!important}
+  .mobile-game-active .game-page{height:100dvh!important;overflow:hidden!important;padding-bottom:4px!important}
+  .mobile-game-active .game-top{position:sticky!important;top:0!important;z-index:60!important}
+  .game-page .mobile-score-workspace.mobile-v0504-workspace{
+    height:calc(100dvh - 142px)!important;
+    max-height:calc(100dvh - 142px)!important;
+    overflow:hidden!important;
+    align-items:start!important;
+  }
+  .game-page .mobile-v0504-field-rail{
+    height:100%!important;max-height:100%!important;overflow:hidden!important;
+    display:flex!important;flex-direction:column!important;
+  }
+  .game-page .mobile-v0504-field-rail .mobile-field-save{flex:0 0 42px!important}
+  .game-page .mobile-v0504-field-rail .field-panel{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
+  .game-page .mobile-v0504-field-rail .field{height:100%!important;min-height:0!important;max-height:none!important}
+  .game-page .mobile-v0504-workflow-rail{
+    height:100%!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;padding-bottom:16px!important;
+  }
+  .game-page .mobile-v0504-toggle{position:sticky!important;top:0!important;z-index:20!important}
+
+  /* All-play rows wrap instead of forcing horizontal scrolling. */
+  .allplays-modal{overflow-x:hidden!important}
+  .allplays-list{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+  .allplay-row{grid-template-columns:28px 30px 38px minmax(0,1fr) 38px 46px!important;gap:4px!important;padding:7px 6px!important;min-width:0!important}
+  .allplay-row>*{min-width:0!important;max-width:100%!important;overflow-wrap:anywhere!important;word-break:break-word!important;white-space:normal!important}
+  .allplay-desc,.allplay-defense{white-space:normal!important;overflow-wrap:anywhere!important}
+  .allplay-edit{white-space:normal!important;padding:4px 3px!important}
+}
+
+/* v0.51.5 — richer team identity */
+.setup-identity-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}.setup-identity-grid .setup-span-2{grid-column:1/-1}.team-logo-upload{display:grid;grid-template-columns:104px 1fr;gap:16px;align-items:center;padding:12px;border:1px solid rgba(100,116,139,.25);border-radius:16px;background:rgba(234,247,255,.45)}.team-logo-preview{width:96px;height:96px;border-radius:18px;background:#082b35;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(0,212,255,.28);color:#64748b;font-size:12px}.team-logo-preview-img{width:100%;height:100%;object-fit:contain;padding:7px}.team-logo-upload input[type=file]{width:100%;font-size:13px}.team-logo-upload small{display:block;margin-top:7px;color:#64748b}.team-logo-remove{margin-top:9px}.team-list-logo,.team-banner-logo{object-fit:contain;background:#082b35;border:1px solid rgba(0,212,255,.24)}.team-list-logo{width:48px;height:48px;border-radius:13px;padding:4px;flex:0 0 auto}.team-banner-logo{width:72px;height:72px;border-radius:18px;padding:6px}.score-team-logo{width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:7px;border-radius:7px;background:rgba(0,0,0,.16);padding:2px}
+@media(max-width:760px){.setup-identity-grid{grid-template-columns:1fr;gap:10px}.setup-identity-grid .setup-span-2{grid-column:auto}.team-logo-upload{grid-template-columns:82px 1fr;gap:10px}.team-logo-preview{width:76px;height:76px}.team-banner-logo{width:52px;height:52px;border-radius:14px}.score-team-logo{width:22px;height:22px;margin-right:4px}.setup-team-modal .setup-body{padding-bottom:100px}}

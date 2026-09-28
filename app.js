@@ -1,9 +1,9 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.51.2';
-const DBKEY='sidelineiq_v0512';
-const LEGACY_KEYS=['sidelineiq_v0510','sidelineiq_v0509','sidelineiq_v0508','sidelineiq_v0507','sidelineiq_v0506','sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
+const BUILD='v0.51.5';
+const DBKEY='sidelineiq_v0515';
+const LEGACY_KEYS=['sidelineiq_v0514','sidelineiq_v0510','sidelineiq_v0513','sidelineiq_v0509','sidelineiq_v0508','sidelineiq_v0507','sidelineiq_v0506','sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
 let selectedPlayId=null;
 let mobilePaneOpen='off';
@@ -22,6 +22,9 @@ function load(){
 let state=load();
 function save(){localStorage.setItem(DBKEY,JSON.stringify(state))}
 function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function teamLogo(t,cls='team-logo'){return t?.logo?`<img class="${cls}" src="${t.logo}" alt="${esc(t.name||'Team')} logo">`:''}
+function teamDetailLine(t){return [t?.city,t?.state,t?.competitionLevel,t?.schoolAffiliation].filter(Boolean).map(esc).join(' · ')}
+function compressTeamLogo(file){return new Promise((resolve,reject)=>{if(!file)return resolve('');const r=new FileReader();r.onerror=()=>reject(new Error('Could not read logo.'));r.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error('That image could not be opened.'));img.onload=()=>{const max=320,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.clearRect(0,0,w,h);x.drawImage(img,0,0,w,h);let out='';try{out=c.toDataURL('image/webp',.84)}catch{}if(!out||out==='data:,')out=c.toDataURL('image/png');resolve(out)};img.src=r.result};r.readAsDataURL(file)})}
 function clamp(n){return Math.max(0,Math.min(100,Math.round(Number(n)||0)))}
 function other(s){return s==='team'?'opp':'team'}
 function teamById(id){return state.teams.find(t=>String(t.id)===String(id))||null}
@@ -61,7 +64,7 @@ function openGameById(id){
 }
 
 function renderTeams(){
- const cards=state.teams.map(t=>{const count=state.games.filter(g=>g.teamId===t.id).length;return `<div class="team-card" data-open-team="${t.id}"><div class="team-left"><div class="team-swatch" style="background:linear-gradient(135deg,${t.primary} 0 60%,${t.secondary} 60%)"></div><div><div class="team-name">${esc(t.name)}</div><div class="team-meta">Football · ${count} game${count===1?'':'s'}</div></div></div><div class="chev">›</div></div>`}).join('');
+ const cards=state.teams.map(t=>{const count=state.games.filter(g=>g.teamId===t.id).length,details=teamDetailLine(t);return `<div class="team-card" data-open-team="${t.id}"><div class="team-left">${t.logo?teamLogo(t,'team-list-logo'):`<div class="team-swatch" style="background:linear-gradient(135deg,${t.primary} 0 60%,${t.secondary} 60%)"></div>`}<div><div class="team-name">${esc(t.name)}</div><div class="team-meta">${details?details+' · ':''}${count} game${count===1?'':'s'}</div></div></div><div class="chev">›</div></div>`}).join('');
  shell(`<main class="page"><div class="home-grid"><aside class="feature-card"><img src="./assets/sidelineiq-home-feature.png" alt="Every play builds a bigger picture — Find Your Edge"></aside><section class="content-card"><div class="section-head"><div><div class="eyebrow">Sideline Command Center</div><h1>My Teams</h1></div><button class="btn btn-primary" id="addTeam">+ Add Team</button></div><div class="team-list">${cards||'<div class="empty">No teams yet. Add your first team to get started.</div>'}</div></section></div></main>`);
  $('#addTeam').onclick=showAddTeam;$$('[data-open-team]').forEach(x=>x.onclick=()=>location.hash='#team/'+x.dataset.openTeam)
 }
@@ -78,48 +81,29 @@ function showModal(html){
  w.onclick=e=>{if(e.target===w)removeModal(w)}
 }
 function closeModal(){removeModal()}
+function teamSetupFields(t={}){
+ return `<div class="setup-identity-grid">
+   <div class="setup-field setup-span-2"><label>Team Name</label><input id="teamName" value="${esc(t.name||'')}" placeholder="Auburn Trojans" autocomplete="off"></div>
+   <div class="setup-field"><label>City</label><input id="teamCity" value="${esc(t.city||'')}" placeholder="Auburn" autocomplete="address-level2"></div>
+   <div class="setup-field"><label>State</label><input id="teamState" value="${esc(t.state||'')}" placeholder="IL" autocomplete="address-level1"></div>
+   <div class="setup-field"><label>Level of Competition</label><select id="teamLevel"><option value="">Select level</option>${['Youth','High School','Collegiate'].map(x=>`<option ${t.competitionLevel===x?'selected':''}>${x}</option>`).join('')}</select></div>
+   <div class="setup-field"><label>School Affiliation</label><input id="teamSchool" value="${esc(t.schoolAffiliation||'')}" placeholder="Auburn CUSD 10" autocomplete="organization"></div>
+   <div class="setup-field setup-span-2"><label>Head Coach</label><input id="teamCoach" value="${esc(t.headCoach||'')}" placeholder="Coach name" autocomplete="name"></div>
+   <div class="setup-field setup-span-2"><label>Team Logo</label><div class="team-logo-upload"><div id="teamLogoPreview" class="team-logo-preview">${t.logo?teamLogo(t,'team-logo-preview-img'):'<span>No logo</span>'}</div><div><input id="teamLogoFile" type="file" accept="image/*"><small>PNG, JPG or WebP. SidelineIQ will resize it for local storage.</small>${t.logo?'<button type="button" class="btn btn-light team-logo-remove" id="removeTeamLogo">Remove logo</button>':''}</div></div></div>
+ </div>
+ <div class="setup-color-row"><div class="setup-field"><label>Primary Color</label><div class="setup-color-control"><input id="primary" type="color" value="${t.primary||'#5B21B6'}"><div><b>Primary</b><span>Main team color</span></div></div></div><div class="setup-field"><label>Secondary Color</label><div class="setup-color-control"><input id="secondary" type="color" value="${t.secondary||'#F4C43D'}"><div><b>Secondary</b><span>Accent color</span></div></div></div></div>`
+}
+function bindTeamLogoPicker(initial=''){
+ let logo=initial||'';const file=$('#teamLogoFile'),preview=$('#teamLogoPreview'),remove=$('#removeTeamLogo');
+ file.onchange=async()=>{const f=file.files?.[0];if(!f)return;try{logo=await compressTeamLogo(f);preview.innerHTML=`<img class="team-logo-preview-img" src="${logo}" alt="Team logo preview">`}catch(e){alert(e.message)}};
+ if(remove)remove.onclick=()=>{logo='';file.value='';preview.innerHTML='<span>No logo</span>';remove.style.display='none'};
+ return ()=>logo
+}
+function readTeamSetup(){return {name:$('#teamName').value.trim(),city:$('#teamCity').value.trim(),state:$('#teamState').value.trim(),competitionLevel:$('#teamLevel').value,schoolAffiliation:$('#teamSchool').value.trim(),headCoach:$('#teamCoach').value.trim(),primary:$('#primary').value,secondary:$('#secondary').value}}
 function showAddTeam(){
- showModal(`<div class="setup-modal setup-team-modal">
-   <div class="setup-head">
-     <div><div class="eyebrow">TEAM SETUP</div><h2>Add Team</h2><p>Set the identity once. You can change it later.</p></div>
-     <button class="setup-close" data-close aria-label="Close">×</button>
-   </div>
-
-   <div class="setup-body">
-     <div class="setup-field setup-field-wide">
-       <label>Team Name</label>
-       <input id="teamName" placeholder="Auburn Jr. High Trojans" autocomplete="off">
-     </div>
-
-     <div class="setup-color-row">
-       <div class="setup-field">
-         <label>Primary Color</label>
-         <div class="setup-color-control">
-           <input id="primary" type="color" value="#5B21B6">
-           <div><b>Primary</b><span>Main team color</span></div>
-         </div>
-       </div>
-       <div class="setup-field">
-         <label>Secondary Color</label>
-         <div class="setup-color-control">
-           <input id="secondary" type="color" value="#F4C43D">
-           <div><b>Secondary</b><span>Accent color</span></div>
-         </div>
-       </div>
-     </div>
-
-     <div class="setup-field setup-field-inline">
-       <div><label>Sport</label><span class="setup-help">SidelineIQ game tracking</span></div>
-       <div class="setup-value-chip">Football</div>
-     </div>
-   </div>
-
-   <div class="setup-actions">
-     <button class="btn btn-light" data-close>Cancel</button>
-     <button class="btn btn-primary" id="saveTeam">Save Team</button>
-   </div>
- </div>`);
- $('#saveTeam').onclick=()=>{const name=$('#teamName').value.trim();if(!name)return alert('Enter a team name.');state.teams.push({id:uid(),name,primary:$('#primary').value,secondary:$('#secondary').value});save();closeModal();renderTeams()}
+ showModal(`<div class="setup-modal setup-team-modal"><div class="setup-head"><div><div class="eyebrow">TEAM SETUP</div><h2>Add Team</h2><p>Build the team identity used throughout SidelineIQ.</p></div><button class="setup-close" data-close aria-label="Close">×</button></div><div class="setup-body">${teamSetupFields()}</div><div class="setup-actions"><button class="btn btn-light" data-close>Cancel</button><button class="btn btn-primary" id="saveTeam">Save Team</button></div></div>`);
+ const getLogo=bindTeamLogoPicker('');
+ $('#saveTeam').onclick=()=>{const data=readTeamSetup();if(!data.name)return alert('Enter a team name.');state.teams.push({id:uid(),...data,logo:getLogo(),roster:[]});save();closeModal();renderTeams()}
 }
 
 const OFFENSE_POSITIONS=['QB','RB','FB','WR','TE','C','G','T','OL'];
@@ -389,7 +373,7 @@ function renderTeam(id){
  const rows=games.map(g=>`<tr data-open-game="${g.id}" tabindex="0" role="button" aria-label="Open game versus ${esc(g.opponent)}"><td>${esc(g.date||'')}</td><td>${esc(g.opponent)}</td><td>${esc(g.location||'Home')}</td><td>${g.gameOver?`${g.teamScore>=g.oppScore?'W':'L'} ${g.teamScore}-${g.oppScore}`:`${g.teamScore||0}-${g.oppScore||0}`}</td><td><button class="game-open-btn" data-open-game-button="${g.id}">Open ›</button></td></tr>`).join('');
  shell(`<main class="page"><button class="btn" onclick="location.hash='#teams'">‹ Back to Teams</button>
  <section class="content-card team-banner" style="border-left:6px solid ${t.primary}">
-   <div class="team-banner-left"><div class="team-swatch" style="background:linear-gradient(135deg,${t.primary} 0 60%,${t.secondary} 60%)"></div><div><div class="team-title">${esc(t.name)}</div><div class="team-meta">Football · ${t.roster.length} rostered player${t.roster.length===1?'':'s'}</div></div></div>
+   <div class="team-banner-left">${t.logo?teamLogo(t,'team-banner-logo'):`<div class="team-swatch" style="background:linear-gradient(135deg,${t.primary} 0 60%,${t.secondary} 60%)"></div>`}<div><div class="team-title">${esc(t.name)}</div><div class="team-meta">${teamDetailLine(t)||'Football'} · ${t.roster.length} rostered player${t.roster.length===1?'':'s'}${t.headCoach?` · Head Coach: ${esc(t.headCoach)}`:''}</div></div></div>
    <button class="btn" id="editTeam">Edit Team</button>
  </section>
  <div class="tabs team-tabs">
@@ -440,9 +424,11 @@ function renderTeam(id){
  bindGameListOpeners()
 }
 function showEditTeam(t){
- showModal(`<div class="setup-modal setup-team-modal"><div class="setup-head"><div><div class="eyebrow">TEAM SETUP</div><h2>Edit Team</h2><p>Update team identity.</p></div><button class="setup-close" data-close>×</button></div><div class="setup-body"><div class="setup-field"><label>Team Name</label><input id="teamName" value="${esc(t.name)}"></div><div class="setup-color-row"><div class="setup-field"><label>Primary Color</label><div class="setup-color-control"><input id="primary" type="color" value="${t.primary}"><div><b>Primary</b><span>Main color</span></div></div></div><div class="setup-field"><label>Secondary Color</label><div class="setup-color-control"><input id="secondary" type="color" value="${t.secondary}"><div><b>Secondary</b><span>Accent color</span></div></div></div></div></div><div class="setup-actions"><button class="btn btn-light" data-close>Cancel</button><button class="btn btn-primary" id="saveTeam">Save Changes</button></div></div>`);
- $('#saveTeam').onclick=()=>{t.name=$('#teamName').value.trim()||t.name;t.primary=$('#primary').value;t.secondary=$('#secondary').value;save();closeModal();renderTeam(t.id)}
+ showModal(`<div class="setup-modal setup-team-modal"><div class="setup-head"><div><div class="eyebrow">TEAM SETUP</div><h2>Edit Team</h2><p>Update team identity and branding.</p></div><button class="setup-close" data-close>×</button></div><div class="setup-body">${teamSetupFields(t)}</div><div class="setup-actions"><button class="btn btn-light" data-close>Cancel</button><button class="btn btn-primary" id="saveTeam">Save Changes</button></div></div>`);
+ const getLogo=bindTeamLogoPicker(t.logo||'');
+ $('#saveTeam').onclick=()=>{const data=readTeamSetup();if(!data.name)return alert('Enter a team name.');Object.assign(t,data,{logo:getLogo()});save();closeModal();renderTeam(t.id)}
 }
+
 function showAddGame(t){
  showModal(`<div class="setup-modal setup-game-modal">
    <div class="setup-head">
@@ -520,7 +506,7 @@ function normalizeGame(g){
  }
  if(g.kickoffPending&&!g.kickoff){const receiving=other(g.openingKick||'team');g.kickoff={phase:'kick',kickingTeam:g.openingKick||'team',receivingTeam:receiving,startYard:g.kickoffYard,kickDir:1,startSpot:g.kickoffYard,landing:null,returnEnd:null,kicker:'',returner:'',tacklers:[],touchback:false}}
 }
-function teamSide(g,t,side){return side==='team'?{name:t.name,color:t.primary,secondary:t.secondary}:{name:g.opponent,color:g.oppColor||'#B8860B',secondary:'#111'}}
+function teamSide(g,t,side){return side==='team'?{name:t.name,color:t.primary,secondary:t.secondary,logo:t.logo||''}:{name:g.opponent,color:g.oppColor||'#B8860B',secondary:'#111',logo:''}}
 function snapshot(g){return {teamScore:g.teamScore,oppScore:g.oppScore,period:g.period,overtime:g.overtime||0,gameOver:!!g.gameOver,down:g.down,toGo:g.toGo,los:g.los,poss:g.poss,driveDir:g.driveDir,awaitingTry:g.awaitingTry,tryType:g.tryType||null,kickoffPending:!!g.kickoffPending,kickoff:g.kickoff?structuredClone(g.kickoff):null,puntPending:!!g.puntPending,punt:g.punt?structuredClone(g.punt):null}}
 function defaultPlay(g){return {type:'Run',end:g.los,player:'',qb:'',receiver:'',passResult:'Complete',defenders:[],penalties:[],score:null,tryResult:null,fumble:false,fumbleRecovery:null,fumbleDetail:null,badSnap:{active:false,center:'',notCaught:false,recoveredBy:null},interception:null,turnover:false,special:null,kicker:'',returner:'',kickGood:null,note:'',outOfBounds:false}}
 function syncTurnoverState(){
@@ -637,7 +623,7 @@ function showGameValidation(g,t,onFinalize){
 
 
 function uiIcon(name){
- const mockupIcons=new Set(['run','pass','badsnap','fumble','normal','td','tackle','sack','pbu','pressure','safety','deftd']);
+ const mockupIcons=new Set(['pass','badsnap','fumble','normal','td','tackle','sack','pbu','pressure']);
  const ext=mockupIcons.has(name)?'png':'svg';
  return `<img class="play-action-icon" src="./icons/actions/${name}.${ext}?v=0427" alt="" aria-hidden="true">`;
 }
@@ -1042,7 +1028,7 @@ function renderGame(id){
  const homeTeam=g.location==='Away'?'opp':'team';const left=teamSide(g,t,homeTeam),right=teamSide(g,t,other(homeTeam));left.score=homeTeam==='team'?g.teamScore:g.oppScore;right.score=homeTeam==='team'?g.oppScore:g.teamScore;
  const off=teamSide(g,t,g.poss),def=teamSide(g,t,other(g.poss));
  const stateLabel=g.gameOver?'FINAL':g.kickoffPending?'KICKOFF':g.puntPending?'PUNT':g.awaitingTry?'TRY':`${ordinal(g.down)} & ${g.toGo}`;const periodLabel=g.overtime?`OT${g.overtime>1?g.overtime:''}`:`${g.format==='halves'?'H':'Q'}${g.period}`;
- shell(`<main class="game-page"><section class="game-top"><div class="game-brand"><img src="./assets/sidelineiq-header-logo.png" alt="SidelineIQ"></div><div class="score-card" style="background:${left.color};color:${textColor(left.color)}"><span class="team-label">${esc(left.name)}${homeTeam===g.poss?' <span class="poss-indicator" title="Possession">🏈</span>':''}</span><span class="score-value">${left.score}</span></div><div class="game-state"><div class="period period-control"><span>${periodLabel}</span><button class="period-next ${g.period>=(g.format==='halves'?2:4)?'game-over-btn':''}" id="nextPeriod" title="${g.gameOver?'Game is final':g.period>=(g.format==='halves'?2:4)?'End game':'Advance period'}">${g.gameOver?'FINAL':g.period>=(g.format==='halves'?2:4)?'Game Over':'›'}</button></div><div class="downline">${stateLabel}</div><div class="pos">${g.kickoffPending?(g.kickoff?.halftime?'Second-half kickoff':'Opening kickoff'):g.puntPending?(g.punt?.phase==='kick'?'Punt':'Punt return'):fmtDrive(g.los,g.driveDir)}</div></div><div class="score-card" style="background:${right.color};color:${textColor(right.color)}"><span class="score-value">${right.score}</span><span class="team-label">${other(homeTeam)===g.poss?'<span class="poss-indicator" title="Possession">🏈</span> ':''}${esc(right.name)}</span></div><div class="nav-strip"><button class="nav-button" onclick="location.hash='#team/${t.id}'"><span class="ico">▣</span>Games</button><button class="nav-button" id="gamePlays"><span class="ico">☷</span>Plays</button><button class="nav-button mobile-primary-action" id="mobileUndo"><span class="ico">↶</span>Undo</button><button class="nav-button mobile-save-action" id="mobileSave"><span class="ico">✓</span>Save</button><button class="nav-button mobile-note-action" id="mobileNotes"><span class="ico">✎</span>Notes</button><button class="nav-button secondary-mobile-nav" id="gameControl"><span class="ico">⌘</span>Control</button><button class="nav-button secondary-mobile-nav" id="flipField" title="Flip field view"><span class="ico">⇄</span>Flip</button><button class="nav-button secondary-mobile-nav" id="gameDrives"><span class="ico">↳</span>Drives</button><button class="nav-button analytics-nav" id="gameAnalytics"><span class="ico">▥</span>Analytics</button><button class="nav-button mobile-hide-action" id="resetGame"><span class="ico">↻</span>Reset</button><button class="nav-button danger-nav mobile-hide-action" id="deleteGame"><span class="ico">✕</span>Delete</button><button class="nav-button settings-nav mobile-hide-action"><span class="ico">⚙</span>Settings</button></div></section>
+ shell(`<main class="game-page"><section class="game-top"><div class="game-brand"><img src="./assets/sidelineiq-header-logo.png" alt="SidelineIQ"></div><div class="score-card" style="background:${left.color};color:${textColor(left.color)}"><span class="team-label">${left.logo?`<img class="score-team-logo" src="${left.logo}" alt="">`:''}${esc(left.name)}${homeTeam===g.poss?' <span class="poss-indicator" title="Possession">🏈</span>':''}</span><span class="score-value">${left.score}</span></div><div class="game-state"><div class="period period-control"><span>${periodLabel}</span><button class="period-next ${g.period>=(g.format==='halves'?2:4)?'game-over-btn':''}" id="nextPeriod" title="${g.gameOver?'Game is final':g.period>=(g.format==='halves'?2:4)?'End game':'Advance period'}">${g.gameOver?'FINAL':g.period>=(g.format==='halves'?2:4)?'Game Over':'›'}</button></div><div class="downline">${stateLabel}</div><div class="pos">${g.kickoffPending?(g.kickoff?.halftime?'Second-half kickoff':'Opening kickoff'):g.puntPending?(g.punt?.phase==='kick'?'Punt':'Punt return'):fmtDrive(g.los,g.driveDir)}</div></div><div class="score-card" style="background:${right.color};color:${textColor(right.color)}"><span class="score-value">${right.score}</span><span class="team-label">${other(homeTeam)===g.poss?'<span class="poss-indicator" title="Possession">🏈</span> ':''}${right.logo?`<img class="score-team-logo" src="${right.logo}" alt="">`:''}${esc(right.name)}</span></div><div class="nav-strip"><button class="nav-button" onclick="location.hash='#team/${t.id}'"><span class="ico">▣</span>Games</button><button class="nav-button" id="gamePlays"><span class="ico">☷</span>Plays</button><button class="nav-button mobile-primary-action" id="mobileUndo"><span class="ico">↶</span>Undo</button><button class="nav-button mobile-save-action" id="mobileSave"><span class="ico">✓</span>Save</button><button class="nav-button mobile-note-action" id="mobileNotes"><span class="ico">✎</span>Notes</button><button class="nav-button secondary-mobile-nav" id="gameControl"><span class="ico">⌘</span>Control</button><button class="nav-button secondary-mobile-nav" id="flipField" title="Flip field view"><span class="ico">⇄</span>Flip</button><button class="nav-button secondary-mobile-nav" id="gameDrives"><span class="ico">↳</span>Drives</button><button class="nav-button analytics-nav" id="gameAnalytics"><span class="ico">▥</span>Analytics</button><button class="nav-button mobile-hide-action" id="resetGame"><span class="ico">↻</span>Reset</button><button class="nav-button danger-nav mobile-hide-action" id="deleteGame"><span class="ico">✕</span>Delete</button><button class="nav-button settings-nav mobile-hide-action"><span class="ico">⚙</span>Settings</button></div></section>
  <div class="main-grid mobile-field-zone"><section class="field-panel"><div class="field" id="field"></div><div class="field-controls"><div class="mini"><small>Line of Scrimmage</small><div class="los-control"><select id="losSide"><option>OWN</option><option>OPP</option><option>50</option></select><input id="losYard" type="number" min="0" max="49"><button class="btn btn-light" id="setLos">Set</button></div></div><div class="mini"><small>Ball at</small><b id="ballText">${g.kickoffPending?'—':fmtDrive(g.los,g.driveDir)}</b></div><div class="mini"><small>Distance</small><b>${g.kickoffPending?'—':g.toGo}</b></div><div class="mini"><small>Down</small><b>${g.kickoffPending?'—':g.down}</b></div><div class="mini"><small>State</small><b>${g.kickoffPending?'KO':g.awaitingTry?'TRY':'LIVE'}</b></div></div></section>
  <aside class="recent-panel"><div class="recent-head"><span>Recent Plays</span><button class="btn btn-light all-plays-btn" id="allPlays">View All</button></div><div class="recent-list">${recentRows(g,t)}</div><div class="recent-actions"><button class="btn btn-light" id="editPlay">Edit Selected</button><button class="btn btn-light" id="undoPlay">Undo Last Play</button></div></aside></div>
  <section class="workbench mobile-side-workspace">
@@ -1644,8 +1630,8 @@ function composeMobileGameLayout(g,t){
  fieldRail.append(fieldSave,fieldPanel);
 
  const workflowToggle=document.createElement('div');
- workflowToggle.className='mobile-v0504-toggle';
- workflowToggle.innerHTML='<button type="button" id="mobileScrimmageToggle">Scrimmage</button><button type="button" id="mobileSpecialToggle">Special Teams</button>';
+ workflowToggle.className='mobile-v0504-toggle mobile-mode-switch';
+ workflowToggle.innerHTML='<span class="mode-label scrimmage-label">Scrimmage</span><label class="mode-switch-control" aria-label="Toggle Scrimmage or Special Teams"><input type="checkbox" id="mobileModeSwitch"><span class="mode-switch-track"><span class="mode-switch-thumb"></span></span></label><span class="mode-label special-label">Special Teams</span>';
 
  const scrimmage=document.createElement('div');
  scrimmage.className='mobile-v0504-mode mobile-v0504-scrimmage';
@@ -1672,12 +1658,12 @@ function composeMobileGameLayout(g,t){
    g.mobileWorkflowMode=specialMode?'special':'scrimmage';
    scrimmage.hidden=specialMode;
    special.hidden=!specialMode;
-   workflowToggle.querySelector('#mobileScrimmageToggle').classList.toggle('active',!specialMode);
-   workflowToggle.querySelector('#mobileSpecialToggle').classList.toggle('active',specialMode);
+   const modeSwitch=workflowToggle.querySelector('#mobileModeSwitch');
+   if(modeSwitch)modeSwitch.checked=specialMode;
+   workflowToggle.classList.toggle('special-active',specialMode);
    save();
  };
- workflowToggle.querySelector('#mobileScrimmageToggle').onclick=()=>setMobileMode('scrimmage');
- workflowToggle.querySelector('#mobileSpecialToggle').onclick=()=>setMobileMode('special');
+ workflowToggle.querySelector('#mobileModeSwitch').onchange=e=>setMobileMode(e.target.checked?'special':'scrimmage');
  setMobileMode(g.mobileWorkflowMode||(g.kickoffPending||g.puntPending?'special':'scrimmage'));
 
  // Geometry is applied inline with !important so it cannot be defeated by
