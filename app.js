@@ -1,9 +1,9 @@
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const BUILD='v0.51.8';
-const DBKEY='sidelineiq_v0516';
-const LEGACY_KEYS=['sidelineiq_v0515','sidelineiq_v0514','sidelineiq_v0510','sidelineiq_v0513','sidelineiq_v0509','sidelineiq_v0508','sidelineiq_v0507','sidelineiq_v0506','sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
+const BUILD='v0.60.0';
+const DBKEY='sidelinedna_v0600';
+const LEGACY_KEYS=['sidelineiq_v0516','sidelineiq_v0515','sidelineiq_v0514','sidelineiq_v0510','sidelineiq_v0513','sidelineiq_v0509','sidelineiq_v0508','sidelineiq_v0507','sidelineiq_v0506','sidelineiq_v0505','sidelineiq_v0504','sidelineiq_v0503','sidelineiq_v0502','sidelineiq_v0501','sidelineiq_v0430','sidelineiq_v0427','sidelineiq_v0426','sidelineiq_v0425','sidelineiq_v0424','sidelineiq_v0423','sidelineiq_v0422','sidelineiq_v0421','sidelineiq_v0420','sidelineiq_v0415','sidelineiq_v0414','sidelineiq_v0413','sidelineiq_v0412','sidelineiq_v0411','sidelineiq_v0410','sidelineiq_v0406','sidelineiq_v0405','sidelineiq_v0404','sidelineiq_v0403','sidelineiq_v0402','sidelineiq_v0401','sidelineiq_v0301','sidelineiq_v0300','sidelineiq_v0230','sidelineiq_v0222','sidelineiq_v0221','sidelineiq_v0220','sidelineiq_v0210','sidelineiq_v0204','sidelineiq_v0203','sidelineiq_v0202','sidelineiq_v0201','sidelineiq_v0200','sidelineiq_v020','sidelineiq_v01515','sidelineiq_v01514','sidelineiq_v01513','sidelineiq_v01512','sidelineiq_v01511','sidelineiq_v01510','sidelineiq_v0159','sidelineiq_v0158','sidelineiq_v0157','sidelineiq_v0156','sidelineiq_v0155','sidelineiq_v0154','sidelineiq_v0153','sidelineiq_v0152','sidelineiq_v0151','sidelineiq_v015','sidelineiq_v014','sidelineiq_v013_corrected','sidelineiq_v013','sidelineiq_v012'];
 const defaultState={teams:[],games:[]};
 let selectedPlayId=null;
 let mobilePaneOpen='off';
@@ -40,7 +40,7 @@ function fmtDrive(screenValue,dir=1){return fmtPos(relSpot(screenValue,dir))}
 function touchdownSpot(dir=1){return dir===1?100:0}
 function textColor(hex='#000'){let h=hex.replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return ((r*299+g*587+b*114)/1000)>150?'#071922':'#fff'}
 function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;$('#toastHost')?.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content,topActions=''){ $('#app').innerHTML=`<div class="app-shell"><header class="topbar"><img class="brand-image" src="./assets/sidelineiq-header-logo.png" alt="SidelineIQ — Find Your Edge"><div class="top-actions"><span class="build-badge">${BUILD}</span>${topActions}</div></header>${content}<footer class="app-version-footer">SIDELINEIQ ${BUILD}</footer></div>`}
+function shell(content,topActions=''){ $('#app').innerHTML=`<div class="app-shell"><header class="topbar"><img class="brand-image" src="./assets/sidelinedna-horizontal-logo.png" alt="SidelineDnA — Decode the Game"><div class="top-actions"><span class="build-badge">${BUILD}</span>${topActions}</div></header>${content}<footer class="app-version-footer">SIDELINEDnA ${BUILD}</footer></div>`}
 function route(){
  try{
    const h=location.hash||'#teams';
@@ -48,9 +48,9 @@ function route(){
    if(h.startsWith('#game/'))return renderGame(h.split('/')[1]);
    renderTeams()
  }catch(err){
-   console.error('SidelineIQ route error',err);
+   console.error('SidelineDnA route error',err);
    const appRoot=document.querySelector('#app');
-   if(appRoot)appRoot.innerHTML=`<div class="app-shell"><main class="page"><section class="content-card route-error"><div class="eyebrow">SIDELINEIQ ${BUILD}</div><h2>Unable to open this screen</h2><p>${esc(err?.message||'Unknown application error')}</p><button class="btn btn-primary" onclick="location.hash='#teams'">Back to Teams</button></section></main></div>`
+   if(appRoot)appRoot.innerHTML=`<div class="app-shell"><main class="page"><section class="content-card route-error"><div class="eyebrow">SIDELINEDnA ${BUILD}</div><h2>Unable to open this screen</h2><p>${esc(err?.message||'Unknown application error')}</p><button class="btn btn-primary" onclick="location.hash='#teams'">Back to Teams</button></section></main></div>`
  }
 }
 window.addEventListener('hashchange',route);
@@ -65,7 +65,7 @@ function openGameById(id){
 
 function renderTeams(){
  const cards=state.teams.map(t=>{const count=state.games.filter(g=>g.teamId===t.id).length,details=teamDetailLine(t);return `<div class="team-card" data-open-team="${t.id}"><div class="team-left">${t.logo?teamLogo(t,'team-list-logo'):`<div class="team-swatch" style="background:linear-gradient(135deg,${t.primary} 0 60%,${t.secondary} 60%)"></div>`}<div><div class="team-name">${esc(t.name)}</div><div class="team-meta">${details?details+' · ':''}${count} game${count===1?'':'s'}</div></div></div><div class="chev">›</div></div>`}).join('');
- shell(`<main class="page"><div class="home-grid"><aside class="feature-card"><img src="./assets/sidelineiq-home-feature.png" alt="Every play builds a bigger picture — Find Your Edge"></aside><section class="content-card"><div class="section-head"><div><div class="eyebrow">Sideline Command Center</div><h1>My Teams</h1></div><button class="btn btn-primary" id="addTeam">+ Add Team</button></div><div class="team-list">${cards||'<div class="empty">No teams yet. Add your first team to get started.</div>'}</div></section></div></main>`);
+ shell(`<main class="page"><div class="home-grid"><aside class="feature-card"><img src="./assets/sidelinedna-primary-brand.png" alt="SidelineDnA — Data + Analytics — Decode the Game"></aside><section class="content-card"><div class="section-head"><div><div class="eyebrow">DATA + ANALYTICS</div><h1>My Teams</h1><p class="brand-positioning">Same Game. More Information. Better Decisions.</p></div><button class="btn btn-primary" id="addTeam">+ Add Team</button></div><div class="team-list">${cards||'<div class="empty">No teams yet. Add your first team to get started.</div>'}</div></section></div></main>`);
  $('#addTeam').onclick=showAddTeam;$$('[data-open-team]').forEach(x=>x.onclick=()=>location.hash='#team/'+x.dataset.openTeam)
 }
 function removeModal(w=document.querySelector('.modal-wrap')){
@@ -89,7 +89,7 @@ function teamSetupFields(t={}){
    <div class="setup-field"><label>Level of Competition</label><select id="teamLevel"><option value="">Select level</option>${['Youth','High School','Collegiate'].map(x=>`<option ${t.competitionLevel===x?'selected':''}>${x}</option>`).join('')}</select></div>
    <div class="setup-field"><label>School Affiliation</label><input id="teamSchool" value="${esc(t.schoolAffiliation||'')}" placeholder="Auburn CUSD 10" autocomplete="organization"></div>
    <div class="setup-field setup-span-2"><label>Head Coach</label><input id="teamCoach" value="${esc(t.headCoach||'')}" placeholder="Coach name" autocomplete="name"></div>
-   <div class="setup-field setup-span-2"><label>Team Logo</label><div class="team-logo-upload"><div id="teamLogoPreview" class="team-logo-preview">${t.logo?teamLogo(t,'team-logo-preview-img'):'<span>No logo</span>'}</div><div><input id="teamLogoFile" type="file" accept="image/*"><small>PNG, JPG or WebP. SidelineIQ will resize it for local storage.</small>${t.logo?'<button type="button" class="btn btn-light team-logo-remove" id="removeTeamLogo">Remove logo</button>':''}</div></div></div>
+   <div class="setup-field setup-span-2"><label>Team Logo</label><div class="team-logo-upload"><div id="teamLogoPreview" class="team-logo-preview">${t.logo?teamLogo(t,'team-logo-preview-img'):'<span>No logo</span>'}</div><div><input id="teamLogoFile" type="file" accept="image/*"><small>PNG, JPG or WebP. SidelineDnA will resize it for local storage.</small>${t.logo?'<button type="button" class="btn btn-light team-logo-remove" id="removeTeamLogo">Remove logo</button>':''}</div></div></div>
  </div>
  <div class="setup-color-row"><div class="setup-field"><label>Primary Color</label><div class="setup-color-control"><input id="primary" type="color" value="${t.primary||'#5B21B6'}"><div><b>Primary</b><span>Main team color</span></div></div></div><div class="setup-field"><label>Secondary Color</label><div class="setup-color-control"><input id="secondary" type="color" value="${t.secondary||'#F4C43D'}"><div><b>Secondary</b><span>Accent color</span></div></div></div></div>`
 }
@@ -101,7 +101,7 @@ function bindTeamLogoPicker(initial=''){
 }
 function readTeamSetup(){return {name:$('#teamName').value.trim(),city:$('#teamCity').value.trim(),state:$('#teamState').value.trim(),competitionLevel:$('#teamLevel').value,schoolAffiliation:$('#teamSchool').value.trim(),headCoach:$('#teamCoach').value.trim(),primary:$('#primary').value,secondary:$('#secondary').value}}
 function showAddTeam(){
- showModal(`<div class="setup-modal setup-team-modal"><div class="setup-head"><div><div class="eyebrow">TEAM SETUP</div><h2>Add Team</h2><p>Build the team identity used throughout SidelineIQ.</p></div><button class="setup-close" data-close aria-label="Close">×</button></div><div class="setup-body">${teamSetupFields()}</div><div class="setup-actions"><button class="btn btn-light" data-close>Cancel</button><button class="btn btn-primary" id="saveTeam">Save Team</button></div></div>`);
+ showModal(`<div class="setup-modal setup-team-modal"><div class="setup-head"><div><div class="eyebrow">TEAM SETUP</div><h2>Add Team</h2><p>Build the team identity used throughout SidelineDnA.</p></div><button class="setup-close" data-close aria-label="Close">×</button></div><div class="setup-body">${teamSetupFields()}</div><div class="setup-actions"><button class="btn btn-light" data-close>Cancel</button><button class="btn btn-primary" id="saveTeam">Save Team</button></div></div>`);
  const getLogo=bindTeamLogoPicker('');
  $('#saveTeam').onclick=()=>{const data=readTeamSetup();if(!data.name)return alert('Enter a team name.');state.teams.push({id:uid(),...data,logo:getLogo(),roster:[]});save();closeModal();renderTeams()}
 }
@@ -152,7 +152,7 @@ function rosterSummary(t){
 }
 function rosterTable(t){
  const r=normalizeRoster(t).slice().sort((a,b)=>(Number(a.number)||999)-(Number(b.number)||999)||rosterPlayerName(a).localeCompare(rosterPlayerName(b)));
- if(!r.length)return `<div class="roster-empty"><div class="roster-empty-icon">#</div><h3>No players yet</h3><p>Add the roster once, then SidelineIQ can use it throughout games and statistics.</p><button class="btn btn-primary" id="emptyAddPlayer">+ Add Player</button></div>`;
+ if(!r.length)return `<div class="roster-empty"><div class="roster-empty-icon">#</div><h3>No players yet</h3><p>Add the roster once, then SidelineDnA can use it throughout games and statistics.</p><button class="btn btn-primary" id="emptyAddPlayer">+ Add Player</button></div>`;
  return `<div class="roster-table-wrap"><table class="roster-table"><thead><tr><th>#</th><th>Player</th><th>Grade</th><th>Positions</th><th>Status</th><th></th></tr></thead><tbody>${r.map(p=>`<tr>
    <td><span class="jersey-badge">${esc(p.number||'—')}</span></td>
    <td><button class="roster-player-name" data-roster-stats="${p.id}">${esc(rosterPlayerName(p))}</button></td>
@@ -299,7 +299,7 @@ function renderOverallAnalytics(t){
  const record=s.completed?`${s.wins}-${s.losses}${s.ties?'-'+s.ties:''}`:'—';
  host.innerHTML=`<section class="content-card season-analytics-card">
    <div class="season-analytics-head">
-     <div><div class="eyebrow">OVERALL ANALYTICS</div><h2>${esc(t.name)}</h2><p>Team and player performance across ${s.games} game${s.games===1?'':'s'}.</p></div>
+     <div><div class="eyebrow">TEAM DNA</div><h2>${esc(t.name)}</h2><p>Decode the patterns revealed across ${s.games} game${s.games===1?'':'s'}.</p></div>
      <div class="season-record"><span>Record</span><b>${record}</b></div>
    </div>
 
@@ -311,21 +311,21 @@ function renderOverallAnalytics(t){
    </div>
 
    <div class="season-split-grid">
-     <div class="season-split-card"><div><span>Rushing</span><b>${s.rushYards}</b><small>${s.rushAtt} attempts · ${s.rushAvg.toFixed(1)} avg</small></div></div>
-     <div class="season-split-card"><div><span>Passing</span><b>${s.passYards}</b><small>${s.completions}/${s.passAtt} · ${s.passPct.toFixed(0)}%</small></div></div>
+     <div class="season-split-card"><div><span>Run DNA</span><b>${s.rushYards}</b><small>${s.rushAtt} attempts · ${s.rushAvg.toFixed(1)} avg</small></div></div>
+     <div class="season-split-card"><div><span>Pass DNA</span><b>${s.passYards}</b><small>${s.completions}/${s.passAtt} · ${s.passPct.toFixed(0)}%</small></div></div>
      <div class="season-split-card"><div><span>First Downs</span><b>${s.firstDowns}</b><small>${s.games?(s.firstDowns/s.games).toFixed(1):'0.0'} / game</small></div></div>
      <div class="season-split-card"><div><span>Turnovers</span><b>${s.turnovers}</b><small>${s.games?(s.turnovers/s.games).toFixed(1):'0.0'} / game</small></div></div>
    </div>
 
    <div class="season-rate-row">
-     <div><span>3rd Down</span><b>${s.thirdMade}/${s.thirdAtt}</b><small>${pct(s.thirdMade,s.thirdAtt)}%</small></div>
-     <div><span>4th Down</span><b>${s.fourthMade}/${s.fourthAtt}</b><small>${pct(s.fourthMade,s.fourthAtt)}%</small></div>
+     <div><span>3rd Down DNA</span><b>${s.thirdMade}/${s.thirdAtt}</b><small>${pct(s.thirdMade,s.thirdAtt)}%</small></div>
+     <div><span>4th Down DNA</span><b>${s.fourthMade}/${s.fourthAtt}</b><small>${pct(s.fourthMade,s.fourthAtt)}%</small></div>
      <div><span>Sacks Allowed</span><b>${s.sacksAllowed}</b></div>
      <div><span>Offensive Plays</span><b>${s.plays}</b></div>
    </div>
 
    <div class="season-player-section">
-     <div class="season-section-head"><div><h3>Players</h3><p>Rostered players appear immediately, even before recording a statistic.</p></div></div>
+     <div class="season-section-head"><div><div class="eyebrow">PERSONNEL DNA</div><h3>Players</h3><p>Rostered players appear immediately, even before recording a statistic.</p></div></div>
      ${seasonPlayerRows(t,s)}
    </div>
  </section>`;
@@ -379,7 +379,7 @@ function renderTeam(id){
  <div class="tabs team-tabs">
    <button class="tab active" data-team-tab="games">Games</button>
    <button class="tab" data-team-tab="roster">Roster <span class="tab-count">${t.roster.length}</span></button>
-   <button class="tab" data-team-tab="analytics">Analytics</button>
+   <button class="tab dna-tab" data-team-tab="analytics">Team DNA</button>
    <button class="btn btn-primary" id="teamPrimaryAction">+ Add Game</button>
  </div>
  <div id="teamPanel"><section class="content-card"><table class="games-table"><thead><tr><th>Date</th><th>Opponent</th><th>Location</th><th>Score</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="empty">No games yet.</td></tr>'}</tbody></table></section></div>
@@ -625,7 +625,7 @@ function showGameValidation(g,t,onFinalize){
 function uiIcon(name){
  const mockupIcons=new Set(['pass','badsnap','fumble','normal','td','tackle','sack','pbu','pressure','oob']);
  const ext=mockupIcons.has(name)?'png':'svg';
- return `<img class="play-action-icon" src="./icons/actions/${name}.${ext}?v=0518" alt="" aria-hidden="true">`;
+ return `<img class="play-action-icon" src="./icons/actions/${name}.${ext}?v=0519" alt="" aria-hidden="true">`;
 }
 function iconButton(icon,label,attrs='',extra=''){
  return `<button ${attrs} class="icon-action-btn ${extra}" aria-label="${esc(label)}" title="${esc(label)}">${uiIcon(icon)}<span class="action-text">${esc(label)}</span></button>`;
@@ -957,8 +957,8 @@ function teamAnalyticsColumn(g,t,side,stats){
    <div class="analytics-hero-row">
      <div class="analytics-total"><span>TOTAL OFFENSE</span><b>${stats.totalYards}</b><small>yards</small></div>
      <div class="analytics-split">
-       <div><span>Rushing</span><b>${stats.rushYards}</b><small>${stats.rushAtt} att · ${stats.rushAvg.toFixed(1)} avg</small></div>
-       <div><span>Passing</span><b>${stats.passYards}</b><small>${stats.completions}/${stats.passAtt} · ${pct(stats.completions,stats.passAtt)}%</small></div>
+       <div><span>Run DNA</span><b>${stats.rushYards}</b><small>${stats.rushAtt} att · ${stats.rushAvg.toFixed(1)} avg</small></div>
+       <div><span>Pass DNA</span><b>${stats.passYards}</b><small>${stats.completions}/${stats.passAtt} · ${pct(stats.completions,stats.passAtt)}%</small></div>
      </div>
    </div>
 
@@ -983,7 +983,7 @@ function showGameAnalytics(g,t){
    const a=gameAnalytics(g,t);
    showModal(`<div class="analytics-modal">
      <div class="analytics-modal-head">
-       <div><div class="eyebrow">IN-GAME ANALYTICS</div><h2>${esc(t.name)} vs ${esc(g.opponent)}</h2><p>Live game statistics calculated from recorded plays.</p></div>
+       <div><div class="eyebrow">GAME DNA</div><h2>${esc(t.name)} vs ${esc(g.opponent)}</h2><p>Live patterns and tendencies calculated from every recorded play.</p></div>
        <button class="btn btn-light" id="closeAnalytics">Close</button>
      </div>
      <div class="analytics-compare">${teamAnalyticsColumn(g,t,'team',a.team)}${teamAnalyticsColumn(g,t,'opp',a.opp)}</div>
@@ -991,8 +991,8 @@ function showGameAnalytics(g,t){
    if($('#closeAnalytics'))$('#closeAnalytics').onclick=closeModal;
    $$('[data-stat-player]').forEach(b=>b.onclick=()=>showPlayerStats(g,t,b.dataset.statSide,b.dataset.statPlayer))
  }catch(err){
-   console.error('SidelineIQ analytics error',err);
-   showModal(`<div class="analytics-error"><div class="eyebrow">IN-GAME ANALYTICS</div><h2>Analytics could not be calculated</h2><p>${esc(err?.message||'Unknown analytics error')}</p><div class="modal-actions"><button class="btn btn-light" data-close>Close</button></div></div>`)
+   console.error('SidelineDnA analytics error',err);
+   showModal(`<div class="analytics-error"><div class="eyebrow">GAME DNA</div><h2>Game DNA could not be calculated</h2><p>${esc(err?.message||'Unknown analytics error')}</p><div class="modal-actions"><button class="btn btn-light" data-close>Close</button></div></div>`)
  }
 }
 function showPlayerStats(g,t,side,number){
@@ -1016,7 +1016,7 @@ function showPlayerStats(g,t,side,number){
      ${hasPen?`<div class="player-stat-card penalty-player-card"><h4>Penalties</h4><div class="player-stat-numbers"><div><b>${p.pen.flags}</b><span>Flags</span></div><div><b>${p.pen.yards}</b><span>Yards</span></div></div><div class="penalty-type-detail">${penTypes||'No penalty detail'}</div></div>`:''}
      ${!hasPass&&!hasRush&&!hasRec&&!hasDef&&!hasPen?`<div class="stat-empty">No recorded statistics for this player yet.</div>`:''}
    </div>
-   <div class="modal-actions"><button class="btn btn-light" id="backAnalytics">Back to Game Analytics</button><button class="btn btn-primary" id="closePlayerStats">Close</button></div>
+   <div class="modal-actions"><button class="btn btn-light" id="backAnalytics">Back to Game DNA</button><button class="btn btn-primary" id="closePlayerStats">Close</button></div>
  </div>`);
  $('#backAnalytics').onclick=()=>showGameAnalytics(g,t);
  $('#closePlayerStats').onclick=closeModal
@@ -1028,7 +1028,7 @@ function renderGame(id){
  const homeTeam=g.location==='Away'?'opp':'team';const left=teamSide(g,t,homeTeam),right=teamSide(g,t,other(homeTeam));left.score=homeTeam==='team'?g.teamScore:g.oppScore;right.score=homeTeam==='team'?g.oppScore:g.teamScore;
  const off=teamSide(g,t,g.poss),def=teamSide(g,t,other(g.poss));
  const stateLabel=g.gameOver?'FINAL':g.kickoffPending?'KICKOFF':g.puntPending?'PUNT':g.awaitingTry?'TRY':`${ordinal(g.down)} & ${g.toGo}`;const periodLabel=g.overtime?`OT${g.overtime>1?g.overtime:''}`:`${g.format==='halves'?'H':'Q'}${g.period}`;
- shell(`<main class="game-page"><section class="game-top"><div class="game-brand"><img src="./assets/sidelineiq-header-logo.png" alt="SidelineIQ"></div><div class="score-card" style="background:${left.color};color:${textColor(left.color)}"><span class="team-label">${left.logo?`<img class="score-team-logo" src="${left.logo}" alt="">`:''}${esc(left.name)}${homeTeam===g.poss?' <span class="poss-indicator" title="Possession">🏈</span>':''}</span><span class="score-value">${left.score}</span></div><div class="game-state"><div class="period period-control"><span>${periodLabel}</span><button class="period-next ${g.period>=(g.format==='halves'?2:4)?'game-over-btn':''}" id="nextPeriod" title="${g.gameOver?'Game is final':g.period>=(g.format==='halves'?2:4)?'End game':'Advance period'}">${g.gameOver?'FINAL':g.period>=(g.format==='halves'?2:4)?'Game Over':'›'}</button></div><div class="downline">${stateLabel}</div><div class="pos">${g.kickoffPending?(g.kickoff?.halftime?'Second-half kickoff':'Opening kickoff'):g.puntPending?(g.punt?.phase==='kick'?'Punt':'Punt return'):fmtDrive(g.los,g.driveDir)}</div></div><div class="score-card" style="background:${right.color};color:${textColor(right.color)}"><span class="score-value">${right.score}</span><span class="team-label">${other(homeTeam)===g.poss?'<span class="poss-indicator" title="Possession">🏈</span> ':''}${right.logo?`<img class="score-team-logo" src="${right.logo}" alt="">`:''}${esc(right.name)}</span></div><div class="nav-strip"><button class="nav-button" onclick="location.hash='#team/${t.id}'"><span class="ico">▣</span>Games</button><button class="nav-button" id="gamePlays"><span class="ico">☷</span>Plays</button><button class="nav-button mobile-primary-action" id="mobileUndo"><span class="ico">↶</span>Undo</button><button class="nav-button mobile-save-action" id="mobileSave"><span class="ico">✓</span>Save</button><button class="nav-button mobile-note-action" id="mobileNotes"><span class="ico">✎</span>Notes</button><button class="nav-button secondary-mobile-nav" id="gameControl"><span class="ico">⌘</span>Control</button><button class="nav-button secondary-mobile-nav" id="flipField" title="Flip field view"><span class="ico">⇄</span>Flip</button><button class="nav-button secondary-mobile-nav" id="gameDrives"><span class="ico">↳</span>Drives</button><button class="nav-button analytics-nav" id="gameAnalytics"><span class="ico">▥</span>Analytics</button><button class="nav-button mobile-hide-action" id="resetGame"><span class="ico">↻</span>Reset</button><button class="nav-button danger-nav mobile-hide-action" id="deleteGame"><span class="ico">✕</span>Delete</button><button class="nav-button settings-nav mobile-hide-action"><span class="ico">⚙</span>Settings</button></div></section>
+ shell(`<main class="game-page"><section class="game-top"><div class="game-brand"><img src="./assets/sidelinedna-horizontal-logo.png" alt="SidelineDnA"></div><div class="score-card" style="background:${left.color};color:${textColor(left.color)}"><span class="team-label">${left.logo?`<img class="score-team-logo" src="${left.logo}" alt="">`:''}${esc(left.name)}${homeTeam===g.poss?' <span class="poss-indicator" title="Possession">🏈</span>':''}</span><span class="score-value">${left.score}</span></div><div class="game-state"><div class="period period-control"><span>${periodLabel}</span><button class="period-next ${g.period>=(g.format==='halves'?2:4)?'game-over-btn':''}" id="nextPeriod" title="${g.gameOver?'Game is final':g.period>=(g.format==='halves'?2:4)?'End game':'Advance period'}">${g.gameOver?'FINAL':g.period>=(g.format==='halves'?2:4)?'Game Over':'›'}</button></div><div class="downline">${stateLabel}</div><div class="pos">${g.kickoffPending?(g.kickoff?.halftime?'Second-half kickoff':'Opening kickoff'):g.puntPending?(g.punt?.phase==='kick'?'Punt':'Punt return'):fmtDrive(g.los,g.driveDir)}</div></div><div class="score-card" style="background:${right.color};color:${textColor(right.color)}"><span class="score-value">${right.score}</span><span class="team-label">${other(homeTeam)===g.poss?'<span class="poss-indicator" title="Possession">🏈</span> ':''}${right.logo?`<img class="score-team-logo" src="${right.logo}" alt="">`:''}${esc(right.name)}</span></div><div class="nav-strip"><button class="nav-button" onclick="location.hash='#team/${t.id}'"><span class="ico">▣</span>Games</button><button class="nav-button" id="gamePlays"><span class="ico">☷</span>Plays</button><button class="nav-button mobile-primary-action" id="mobileUndo"><span class="ico">↶</span>Undo</button><button class="nav-button mobile-save-action" id="mobileSave"><span class="ico">✓</span>Save</button><button class="nav-button mobile-note-action" id="mobileNotes"><span class="ico">✎</span>Notes</button><button class="nav-button secondary-mobile-nav" id="gameControl"><span class="ico">⌘</span>Control</button><button class="nav-button secondary-mobile-nav" id="flipField" title="Flip field view"><span class="ico">⇄</span>Flip</button><button class="nav-button secondary-mobile-nav" id="gameDrives"><span class="ico">↳</span>Drives</button><button class="nav-button analytics-nav" id="gameAnalytics"><span class="ico">▥</span>Game DNA</button><button class="nav-button mobile-hide-action" id="resetGame"><span class="ico">↻</span>Reset</button><button class="nav-button danger-nav mobile-hide-action" id="deleteGame"><span class="ico">✕</span>Delete</button><button class="nav-button settings-nav mobile-hide-action"><span class="ico">⚙</span>Settings</button></div></section>
  <div class="main-grid mobile-field-zone"><section class="field-panel"><div class="field" id="field"></div><div class="field-controls"><div class="mini"><small>Line of Scrimmage</small><div class="los-control"><select id="losSide"><option>OWN</option><option>OPP</option><option>50</option></select><input id="losYard" type="number" min="0" max="49"><button class="btn btn-light" id="setLos">Set</button></div></div><div class="mini"><small>Ball at</small><b id="ballText">${g.kickoffPending?'—':fmtDrive(g.los,g.driveDir)}</b></div><div class="mini"><small>Distance</small><b>${g.kickoffPending?'—':g.toGo}</b></div><div class="mini"><small>Down</small><b>${g.kickoffPending?'—':g.down}</b></div><div class="mini"><small>State</small><b>${g.kickoffPending?'KO':g.awaitingTry?'TRY':'LIVE'}</b></div></div></section>
  <aside class="recent-panel"><div class="recent-head"><span>Recent Plays</span><button class="btn btn-light all-plays-btn" id="allPlays">View All</button></div><div class="recent-list">${recentRows(g,t)}</div><div class="recent-actions"><button class="btn btn-light" id="editPlay">Edit Selected</button><button class="btn btn-light" id="undoPlay">Undo Last Play</button></div></aside></div>
  <section class="workbench mobile-side-workspace">
@@ -2635,15 +2635,15 @@ function drawField(g,t){
 }
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.warn));
 
-if(!window.__sidelineIQNumericObserver){
-  window.__sidelineIQNumericObserver=new MutationObserver(muts=>{
+if(!window.__sidelineDnANumericObserver){
+  window.__sidelineDnANumericObserver=new MutationObserver(muts=>{
     for(const m of muts){
       for(const n of m.addedNodes){
         if(n.nodeType===1) enhancePlayerNumberKeyboards(n);
       }
     }
   });
-  window.__sidelineIQNumericObserver.observe(document.documentElement,{childList:true,subtree:true});
+  window.__sidelineDnANumericObserver.observe(document.documentElement,{childList:true,subtree:true});
 }
 
 route();

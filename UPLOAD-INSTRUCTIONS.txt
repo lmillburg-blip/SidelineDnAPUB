@@ -1,5 +1,24 @@
-SIDELINEIQ v0.51.5 — Team Identity
+SIDELINEDnA v0.60.0 — BRAND + UI OVERHAUL
 
-Adds city, state, competition level, school affiliation, head coach, and locally stored team logo. Team logos are used in team lists, team pages, and game scoreboards. Existing v0.51.4 data migrates automatically.
+OFFICIAL BRAND
+SidelineDnA
+Data + Analytics
+Decode the Game.
 
-Upload all files/folders in this ZIP to the GitHub repository root.
+Positioning: Same Game. More Information. Better Decisions.
+
+WHAT CHANGED
+- Complete visible rebrand from SidelineIQ to SidelineDnA.
+- New canonical football + DNA artwork across header, home, PWA icon and installed app identity.
+- Midnight / electric blue / cyan / platinum visual system.
+- Premium dark sports-tech surface treatment across cards, modals, analytics, team pages and live game.
+- Team analytics renamed Team DNA, with Run DNA, Pass DNA, Personnel DNA, 3rd Down DNA and 4th Down DNA language where supported by existing data.
+- In-game Analytics becomes Game DNA.
+- Existing game capture, penalties, special teams, All Plays editing, roster, analytics calculations and mobile workflow are preserved.
+- Existing SidelineIQ local data migrates forward into the SidelineDnA storage key.
+- PWA manifest, app icon, theme colors and service-worker cache rebranded.
+
+DEPLOY
+Upload every file and folder in this ZIP to the root of sidelinedna.com / your current deployment target.
+Preserve assets/ and icons/.
+On iPhone, remove/re-add the Home Screen app only if iOS continues showing the old icon after deployment.

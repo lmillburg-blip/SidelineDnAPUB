@@ -1244,7 +1244,7 @@ body.modal-open{overflow:hidden!important;touch-action:none}
 .play-notes-modal .notes-label{display:block;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;color:#52677a;margin-bottom:5px}
 .play-notes-modal textarea{width:100%;resize:vertical;min-height:130px;border:1px solid #b9c8cf;border-radius:10px;background:#fff;color:#102635;padding:11px;font:inherit}
 
-/* Cleaner retro editor: same card/form language as the rest of SidelineIQ. */
+/* Cleaner retro editor: same card/form language as the rest of SidelineDnA. */
 .modal.retro-edit-shell{padding:0!important;border-radius:16px!important;background:#f4f8fa!important}
 .retro-edit-modal{background:#f4f8fa!important;color:#102635!important;padding:0!important}
 .retro-edit-head{
@@ -1394,7 +1394,7 @@ body.modal-open{overflow:hidden!important;touch-action:none}
   line-height:1;
 }
 
-/* Light white outline sketches, matching the SidelineIQ cyan/navy visual language. */
+/* Light white outline sketches, matching the SidelineDnA electric blue/cyan visual language. */
 .play-action-icon{
   width:42px;
   height:42px;
@@ -2757,4 +2757,254 @@ body:has(.game-page){
     top:0!important;
     z-index:30!important;
   }
+}
+
+/* ==========================================================
+   v0.51.9 — Global iPhone safe-area shell
+   Every mobile screen now respects the iOS status/Dynamic Island inset.
+   Desktop is intentionally unchanged. Live Game keeps its dedicated shell.
+   ========================================================== */
+@media (max-width:760px){
+  html{
+    min-height:100%;
+    background:#03151d;
+  }
+
+  /* Standard application screens: place the persistent app header below
+     the iOS status area. Using the header instead of body padding avoids
+     double-counting the live-game viewport measurements. */
+  body:not(:has(.game-page)) .topbar{
+    padding-top:calc(8px + env(safe-area-inset-top))!important;
+    min-height:calc(72px + env(safe-area-inset-top))!important;
+  }
+
+  /* Any modal opened from any screen gets the same protected top edge.
+     This covers team/game setup, roster, analytics, plays/editors, notes,
+     penalties, defensive review, confirmations, and future modal screens. */
+  .modal-wrap{
+    padding-top:calc(10px + env(safe-area-inset-top))!important;
+    padding-bottom:calc(10px + env(safe-area-inset-bottom))!important;
+    scroll-padding-top:calc(10px + env(safe-area-inset-top))!important;
+  }
+
+  /* Full-height/modal shells must size inside the safe viewport rather than
+     extending underneath the status bar or home indicator. */
+  .modal{
+    max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px)!important;
+  }
+
+  /* Standalone/full-screen surfaces that do not render the normal topbar
+     still receive a safe top inset. */
+  body:not(:has(.game-page)) .app-shell > .page:first-child,
+  body:not(:has(.game-page)) main.page:first-child{
+    padding-top:max(10px,env(safe-area-inset-top))!important;
+  }
+}
+
+/* ======================================================================
+   SidelineDnA v0.60.0 — Official Brand / Premium Sports-Tech UI
+   Visual source of truth: uploaded SidelineDnA brand + product boards.
+   Functionality/layout behavior from v0.51.9 intentionally preserved.
+   ====================================================================== */
+:root{
+  --midnight:#081A2B;
+  --midnight-deep:#03101D;
+  --midnight-panel:#0A2135;
+  --midnight-panel-2:#0D2A42;
+  --electric-blue:#0084FF;
+  --cyan:#22E0FF;
+  --platinum:#C7D3E3;
+  --white:#FFFFFF;
+  --dna-line:rgba(34,224,255,.25);
+  --dna-glow:0 0 22px rgba(0,132,255,.18);
+  --premium-shadow:0 18px 42px rgba(0,0,0,.34);
+  --deep-teal:var(--midnight);
+  --electric-cyan:var(--cyan);
+  --field-blue:var(--electric-blue);
+  --ice:#EEF7FF;
+  --bg:var(--midnight-deep);
+  --bg2:var(--midnight);
+  --panel:var(--midnight-panel);
+  --panel2:var(--midnight-panel-2);
+  --line:#1D4B6A;
+  --text:#F7FBFF;
+  --muted:#9CB4C8;
+  --purple:#0078EF;
+}
+html,body{
+  background:
+    radial-gradient(circle at 82% -8%,rgba(0,132,255,.18),transparent 31%),
+    radial-gradient(circle at 12% 12%,rgba(34,224,255,.08),transparent 27%),
+    linear-gradient(180deg,#020B14 0%,#061725 38%,#081A2B 100%);
+  color:var(--white);
+  font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:repeating-linear-gradient(90deg,transparent 0 79px,rgba(34,224,255,.012) 80px 81px);
+  opacity:.6;
+}
+.app-shell{background:transparent}
+.topbar{
+  min-height:78px;
+  background:linear-gradient(180deg,rgba(2,13,24,.97),rgba(5,23,38,.94));
+  border-bottom:1px solid rgba(34,224,255,.22);
+  box-shadow:0 12px 36px rgba(0,0,0,.28),0 1px 0 rgba(34,224,255,.08) inset;
+  backdrop-filter:blur(18px);
+}
+.brand-image{width:330px;height:62px;filter:drop-shadow(0 0 12px rgba(0,132,255,.18))}
+.build-badge{
+  border-color:rgba(34,224,255,.3);background:rgba(8,26,43,.82);color:var(--cyan);
+  box-shadow:0 0 18px rgba(34,224,255,.08) inset;
+}
+.app-version-footer{color:#7290a8;letter-spacing:.15em;text-transform:uppercase}
+.eyebrow{color:var(--cyan)!important;letter-spacing:.18em}
+.brand-positioning{margin:5px 0 0;color:#93A9BC;font-size:12px;letter-spacing:.02em}
+
+.btn{
+  border-color:rgba(92,155,190,.34);
+  background:linear-gradient(180deg,rgba(17,51,76,.96),rgba(7,30,49,.98));
+  color:#F4F9FD;border-radius:11px;
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 6px 18px rgba(0,0,0,.18);
+  transition:transform .12s ease,filter .12s ease,border-color .12s ease;
+}
+.btn:hover{filter:brightness(1.12);border-color:rgba(34,224,255,.55)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{
+  background:linear-gradient(135deg,#0084FF,#00B7FF 62%,#22E0FF);
+  border-color:#50E9FF;color:#fff;box-shadow:0 8px 24px rgba(0,132,255,.28),inset 0 1px rgba(255,255,255,.26);
+}
+.btn-light{background:#EDF5FA;color:#0B2435;border-color:#D5E0E7}
+
+.content-card,.feature-card,.team-banner{
+  background:linear-gradient(155deg,rgba(11,38,61,.96),rgba(4,20,34,.98));
+  border-color:rgba(77,141,176,.34);
+  box-shadow:var(--premium-shadow),0 0 0 1px rgba(34,224,255,.025) inset;
+}
+.feature-card{position:relative;background:#030D17}
+.feature-card:after{content:"";position:absolute;inset:auto 0 0;height:38%;background:linear-gradient(transparent,rgba(0,8,16,.68));pointer-events:none}
+.section-head{border-color:rgba(153,190,211,.12)}
+.team-card{
+  min-height:86px;border-color:rgba(75,139,174,.30);border-radius:14px;
+  background:linear-gradient(135deg,rgba(12,47,73,.92),rgba(5,25,42,.98));
+  box-shadow:0 8px 22px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.025);
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.team-card:hover{transform:translateY(-1px);border-color:rgba(34,224,255,.42);background:linear-gradient(135deg,rgba(13,55,85,.96),rgba(5,27,45,.99))}
+.team-card:after{background:linear-gradient(90deg,transparent,rgba(0,132,255,.035))}
+.team-swatch{border-color:rgba(255,255,255,.35);box-shadow:0 0 0 3px rgba(34,224,255,.06),0 7px 20px rgba(0,0,0,.3)}
+.chev{color:var(--cyan)}
+.tabs{gap:5px;padding:4px;background:rgba(4,19,32,.64);border:1px solid rgba(58,119,151,.24);border-radius:13px;width:max-content;max-width:100%}
+.tab{border:0;background:transparent;color:#AFC1D0;border-radius:9px;padding:9px 15px}
+.tab.active{background:linear-gradient(180deg,#0D78E7,#0069D4);color:#fff;box-shadow:0 5px 18px rgba(0,132,255,.24)}
+.tab.dna-tab:before{content:"⌁";color:var(--cyan);margin-right:6px}
+
+/* Team setup / roster */
+.modal-wrap{background:rgba(0,5,12,.82);backdrop-filter:blur(12px)}
+.modal{
+  background:linear-gradient(155deg,#0C2940,#061827 74%);
+  border-color:rgba(65,139,178,.42);border-radius:18px;
+  box-shadow:0 28px 90px rgba(0,0,0,.55),0 0 40px rgba(0,132,255,.06);
+}
+.setup-head{border-color:rgba(199,211,227,.10)}
+.setup-field label,.section-label{color:#8EABC0}
+.setup-field input,.setup-field select,.setup-field textarea,
+.field input,.field select,.field textarea{
+  background:#061727!important;color:#F7FBFF!important;border-color:#285272!important;border-radius:10px!important;
+  box-shadow:inset 0 1px 5px rgba(0,0,0,.18);
+}
+.setup-field input:focus,.setup-field select:focus,.setup-field textarea:focus,
+.form-row input:focus,.form-row select:focus{
+  outline:none;border-color:#22E0FF!important;box-shadow:0 0 0 3px rgba(34,224,255,.11)!important;
+}
+.roster-summary>div,.player-stat-card,.season-split-card,.season-rate-row>div{
+  background:linear-gradient(155deg,#0E2A41,#071B2D)!important;color:#F7FBFF!important;border-color:rgba(82,145,179,.28)!important;
+}
+
+/* Live game — retain geometry, replace visual system. */
+.game-page{color:#fff}
+.game-brand{background:linear-gradient(145deg,#061827,#091F32);border-color:rgba(34,224,255,.26);box-shadow:inset 0 1px rgba(255,255,255,.035)}
+.game-brand img{filter:drop-shadow(0 0 10px rgba(0,132,255,.16))}
+.score-card{border-color:rgba(255,255,255,.22);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.24)}
+.score-card:after{background:linear-gradient(112deg,rgba(255,255,255,.16),transparent 38%,rgba(0,0,0,.08))}
+.game-state{background:linear-gradient(160deg,#0B2C44,#061A2A);border-color:rgba(58,137,178,.42);border-radius:12px;box-shadow:inset 0 1px rgba(255,255,255,.04)}
+.nav-strip{border-color:rgba(53,126,163,.34);border-radius:12px;background:linear-gradient(180deg,#071E31,#051522);box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.nav-button{border-color:rgba(74,132,162,.18);color:#DCE8F0;transition:background .12s,color .12s}
+.nav-button:hover{background:rgba(0,132,255,.12);color:white}
+.nav-button .ico{color:var(--cyan);filter:drop-shadow(0 0 7px rgba(34,224,255,.22))}
+.analytics-nav{position:relative}
+.analytics-nav:after{content:"";position:absolute;left:18%;right:18%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.field-panel{background:linear-gradient(160deg,#082136,#061724);border-color:rgba(66,132,168,.34);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.28)}
+.field{border-color:#BFD4E2;box-shadow:inset 0 0 25px rgba(0,0,0,.14)}
+.los-line{background:#22E0FF;box-shadow:0 0 10px rgba(34,224,255,.72)}
+.fd-line{box-shadow:0 0 10px rgba(245,214,25,.55)}
+.football{box-shadow:0 3px 12px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.08)}
+.mini{background:linear-gradient(180deg,#F4F8FA,#E8F0F4);border-color:#D3DEE4;border-radius:8px;box-shadow:0 2px 7px rgba(0,0,0,.10)}
+.workbench{border-radius:13px 13px 0 0;box-shadow:0 14px 38px rgba(0,0,0,.22)}
+.pane{background:linear-gradient(180deg,#0C263B,#071A2A);color:#F4F9FD;border-color:rgba(76,133,163,.18)}
+.pane-title{background:linear-gradient(90deg,#006ED8,#0084FF 60%,#17C9F1)!important;color:#fff;letter-spacing:.05em;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.pane.def .pane-title{background:linear-gradient(90deg,#0A5579,#087CA9)!important}
+.pane.st .pane-title{background:linear-gradient(90deg,#006ED8,#0084FF)!important}
+.pane.pen .pane-title{background:linear-gradient(90deg,#AF2838,#D33B4E)!important}
+.pane-body{color:#DDE8F0}
+.section-label{color:#87A8BE!important}
+.seg button,.form-row input,.form-row select{
+  background:#081E31;color:#F7FBFF;border-color:#2B5674;border-radius:9px;
+}
+.seg button.active{background:linear-gradient(180deg,#0084FF,#006FD7);border-color:#22E0FF;color:#fff;box-shadow:0 0 16px rgba(0,132,255,.22)}
+.action-grid button{background:linear-gradient(180deg,#0B4160,#082E46);border:1px solid #255874;border-radius:9px;box-shadow:inset 0 1px rgba(255,255,255,.04)}
+.action-grid button:hover{border-color:#22E0FF}.action-grid button.alt{background:#19344D}.action-grid button.score{background:linear-gradient(180deg,#B93445,#922535)}
+.summary,.notice{background:#091E30;color:#CFE0EA;border-color:#28516C;border-radius:9px}
+.savebar{background:#071A2B;border-color:rgba(87,145,176,.22)}
+.play-note{background:#061726;color:white;border-color:#285372;border-radius:9px}
+
+/* Analytics becomes the SidelineDnA DNA layer. */
+.modal.analytics-shell{background:linear-gradient(155deg,#071C2D,#030E19)}
+.analytics-modal{color:#EAF4FA}
+.analytics-modal-head{background:linear-gradient(180deg,#0B2B43,#071A2A);border-color:rgba(34,224,255,.18)}
+.analytics-team-card{
+  background:linear-gradient(155deg,#0D2A42,#061928)!important;color:#EAF4FA!important;
+  border-color:rgba(76,145,181,.28)!important;border-top-color:var(--team-color)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.30),0 0 30px rgba(0,132,255,.035)!important;
+}
+.analytics-team-head h3,.analytics-team-head small{color:#F7FBFF!important}
+.analytics-team-head small{color:#91AFC3!important}
+.analytics-total{background:linear-gradient(145deg,#06233A,#071A2C);border-left-color:var(--team-color);box-shadow:inset 0 0 24px rgba(0,132,255,.04)}
+.analytics-split>div,.analytics-kpi,.stat-section,.penalty-team-summary>div{
+  background:linear-gradient(145deg,#0B263C,#071A2A)!important;color:#F3F8FB!important;border-color:rgba(73,135,167,.26)!important;
+}
+.analytics-kpi span,.analytics-kpi small,.stat-section h4{color:#8EABC0!important}
+.analytics-kpi b{color:#fff!important}
+.stat-table th{color:#8FAEC2!important;background:#081D2F!important}
+.stat-table td{color:#E8F1F6!important;border-color:rgba(104,154,180,.14)!important}
+.stat-table tbody tr:nth-child(even){background:rgba(0,132,255,.025)!important}
+.player-stat-card h4{color:#22E0FF!important}
+.player-stat-numbers b{color:#fff!important}.player-stat-numbers span{color:#91AFC3!important}
+
+/* Season / Team DNA */
+.season-analytics-card{background:linear-gradient(150deg,#0A2439,#061725)!important}
+.season-analytics-head{background:linear-gradient(90deg,rgba(0,132,255,.07),transparent)}
+.season-record{background:#061B2C!important;border-color:rgba(34,224,255,.25)!important}.season-record b{color:#fff!important}
+.season-kpis>div{background:linear-gradient(150deg,#0D2B43,#061A2A)!important;color:#fff!important;border-color:rgba(76,141,175,.27)!important}
+.season-kpis>div.primary{border-color:#0084FF!important;box-shadow:0 0 24px rgba(0,132,255,.08)}
+.season-kpis span,.season-split-card span,.season-rate-row span{color:#8EAEC2!important}
+.season-kpis b,.season-split-card b,.season-rate-row b{color:#fff!important}
+.season-player-table{background:#071B2C;color:#E8F2F8}.season-player-table th{background:#0A263B;color:#9BB5C7}.season-player-table td{border-color:rgba(91,145,173,.14)}
+.season-player-link{color:#22E0FF}
+
+/* Premium floating state feedback */
+.toast{background:linear-gradient(145deg,#0C2C44,#071A2A);border-color:rgba(34,224,255,.35);box-shadow:0 16px 38px rgba(0,0,0,.42),0 0 22px rgba(0,132,255,.08)}
+
+@media(max-width:760px){
+  .topbar{min-height:64px;background:linear-gradient(180deg,rgba(2,12,22,.98),rgba(5,22,36,.96))}
+  .brand-image{width:225px;height:50px;max-width:70vw}
+  .brand-positioning{font-size:10px}
+  .content-card,.feature-card{border-radius:14px}
+  .game-state,.score-card,.nav-strip,.field-panel{border-radius:10px}
+  .mobile-v0504-toggle,.mobile-mode-switch{background:#061A2A!important;border-color:rgba(47,116,152,.30)!important}
+  .mobile-v0504-toggle button,.mobile-mode-switch button{color:#89A7BA!important}
+  .mobile-v0504-toggle button.active,.mobile-mode-switch button.active{background:linear-gradient(180deg,#0084FF,#006ED8)!important;color:#fff!important;border-color:#22E0FF!important;box-shadow:0 0 18px rgba(0,132,255,.22)!important}
+  .mobile-v0504-workflow-rail{background:#061724!important}
+  .mobile-v0504-mode .pane{background:linear-gradient(180deg,#0A2337,#061827)!important}
+  .mobile-penalty-popup-trigger{background:linear-gradient(180deg,#D73B4E,#A82536)!important;border-color:#F45E70!important}
 }

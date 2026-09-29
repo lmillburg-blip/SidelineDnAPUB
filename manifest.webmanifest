@@ -1,12 +1,12 @@
 {
-  "name": "SidelineIQ",
-  "short_name": "SidelineIQ",
+  "name": "SidelineDnA \u2014 Data + Analytics",
+  "short_name": "SidelineDnA",
   "start_url": "./#teams",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#041922",
-  "theme_color": "#0B2E3A",
-  "description": "Football intelligence built for the sideline.",
+  "background_color": "#081A2B",
+  "theme_color": "#081A2B",
+  "description": "Football data + analytics. Decode the Game.",
   "icons": [
     {
       "src": "./icons/icon-192.png",
