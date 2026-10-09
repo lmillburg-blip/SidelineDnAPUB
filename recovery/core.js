@@ -28,30 +28,34 @@ function combineSnapshots(snapshots){
  return {label:'COMBINED HISTORY — '+snapshots.length+' cached versions; '+merged.games.length+' unique games ('+duplicates+' duplicate copies skipped)',state:merged};
 }
 async function scan(){
- const snapshots=[],warnings=[];
+ const snapshots=[],warnings=[],diagnostics=[];
  for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(!/^sideline(iq|dna)[_:-]/i.test(key))continue;try{const state=JSON.parse(localStorage.getItem(key));if(state?.games)snapshots.push({label:key,state:validate(state)});}catch(e){warnings.push(key+': '+e.message);}}
- if(indexedDB.databases){
-  const dbs=await indexedDB.databases();
+ if(typeof indexedDB!=='undefined' && indexedDB.databases){
+  let dbs=[];try{dbs=await indexedDB.databases();}catch(e){warnings.push('Cannot enumerate IndexedDB: '+e.message);}
+  diagnostics.push('IndexedDB databases found: '+dbs.length);
   for(const entry of dbs){let db;
    try{db=await new Promise((resolve,reject)=>{const r=indexedDB.open(entry.name);r.onupgradeneeded=()=>{try{r.transaction.abort();}catch(_){} reject(Error('Database disappeared; scan skipped.'));};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(Error('Database blocked; close other app tabs.'));});
     const stores=[...db.objectStoreNames];
     const gameStore=['games','game_records','game'].find(n=>stores.includes(n));
     const playStore=['plays','game_plays','play'].find(n=>stores.includes(n));
-    if(!gameStore||!playStore)continue;
+    diagnostics.push((entry.name||'IndexedDB')+': stores '+stores.join(', '));
+    if(!gameStore){warnings.push((entry.name||'IndexedDB')+': no recognized games store; not exported.');continue;}
     const teamStore=['teams','team'].find(n=>stores.includes(n));
-    const names=[gameStore,playStore,...(teamStore?[teamStore]:[])];
+    const names=[gameStore,...(playStore?[playStore]:[]),...(teamStore?[teamStore]:[])];
     const rows=await new Promise((resolve,reject)=>{const tx=db.transaction(names,'readonly'),result={};names.forEach(n=>{const r=tx.objectStore(n).getAll();r.onsuccess=()=>result[n]=r.result;});tx.oncomplete=()=>resolve(result);tx.onerror=tx.onabort=()=>reject(tx.error||Error('Read failed'));});
     const rawGames=rows[gameStore]||[],rawPlays=rows[playStore]||[],rawTeams=teamStore?(rows[teamStore]||[]):[];
     const teams=rawTeams.map(t=>t.data||t).filter(t=>t?.id!=null);
-    const games=rawGames.map(record=>{const g=record.data||record;const id=g.id??record.id;const teamId=g.teamId??g.team_id??record.teamId;const plays=rawPlays.filter(q=>String(q.gameId??q.game_id??q.data?.gameId)===String(id)).sort((a,b)=>(a.sequence??a.data?.sequence??0)-(b.sequence??b.data?.sequence??0)).map(q=>q.play||q.data?.play||q);return {...g,id,teamId,plays};}).filter(g=>g.id!=null&&g.teamId!=null&&Array.isArray(g.plays));
+    const games=rawGames.map(record=>{const g=record.data||record;const id=g.id??record.id;const teamId=g.teamId??g.team_id??record.teamId;const separate=rawPlays.filter(q=>String(q.gameId??q.game_id??q.data?.gameId)===String(id)).sort((a,b)=>(a.sequence??a.data?.sequence??0)-(b.sequence??b.data?.sequence??0)).map(q=>q.play||q.data?.play||q);const embedded=Array.isArray(g.plays)?g.plays:[];const plays=separate.length>embedded.length?separate:embedded;return {...g,id,teamId,plays};}).filter(g=>g.id!=null&&g.teamId!=null&&Array.isArray(g.plays));
+    diagnostics.push((entry.name||'IndexedDB')+': '+rawGames.length+' game rows, '+rawPlays.length+' separate play rows, '+games.length+' usable games');
+    if(games.length<rawGames.length)warnings.push((entry.name||'IndexedDB')+': '+(rawGames.length-games.length)+' game rows lack a game or team ID.');
     if(!games.length)continue;
-    snapshots.push({label:(entry.name||'IndexedDB')+' (IndexedDB '+gameStore+'/'+playStore+')',state:validate({teams,games})});
+    snapshots.push({label:(entry.name||'IndexedDB')+' (IndexedDB '+gameStore+(playStore?'/'+playStore:'; embedded plays')+')',state:validate({teams,games})});
    }catch(e){warnings.push((entry.name||'IndexedDB')+': '+e.message);}finally{db?.close();}
   }
  }else warnings.push('This browser cannot list IndexedDB databases. Local Storage was checked.');
  snapshots.sort((a,b)=>{const ai=LEGACY_KEY_ORDER.indexOf(a.label),bi=LEGACY_KEY_ORDER.indexOf(b.label);return (ai<0?9999:ai)-(bi<0?9999:bi);});
  if(snapshots.length>1)snapshots.unshift(combineSnapshots(snapshots));
- return {format:'sdna-recovery-1',origin:location.origin,exportedAt:new Date().toISOString(),snapshots,warnings};
+ return {format:'sdna-recovery-1',origin:location.origin,exportedAt:new Date().toISOString(),snapshots,warnings,diagnostics};
 }
 function download(data){const url=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='SidelineIQ-recovery-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);}
 const api={validate,candidates,combineSnapshots,scan,download};root.SDNARecovery=api;if(typeof module!=='undefined')module.exports=api;
